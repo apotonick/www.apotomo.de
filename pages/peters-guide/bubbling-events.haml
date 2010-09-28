@@ -1,0 +1,44 @@
+:ruby
+  # :alias => :bubbling
+
+:textile
+  h1. Bubbling events
+  
+  Ok, our very simple widget tree currently consists of three widgets
+  
+= code "app/controllers/dashboard_controller.rb", :tag => "v3", :lines => (4..8)
+
+:textile
+  Now, @bin@ alters the tweets table and triggers an event.
+
+= code "app/cells/trashbin_widget.rb", :tag => "v3", :lines => (8..10)
+
+.lefty
+  :textile
+    The triggered event starts from @bin@, climbs up and bubbles to @root@. To grab it we have to attach an observer to either @bin@ or @root@.
+    
+    How could @parrot@ catch that event itself?
+    
+    The answer is: *it can't*. We have to put the observer somewhere on the way between the trashbin and root.
+
+%p
+  = img "event-bubbling.png", :class => "right last"
+
+:textile
+  h2. The dirty approach
+  
+  You may simply put the observer into your controller's @has_widgets@ block, as we did it above. This works fine, however, your controller now know details about the widgets that should be hidden from it.
+  
+  What if the event name changes or the triggering state name? The controller shouldn't know things like that.
+  
+  You are better of by putting observers into the widgets itself.
+  
+  
+  h2. A less dirty way
+  
+  The observer setup can also happen in the @after_add@ hook, not to confuse with _After Eight_, a delicious mint and chocolate desert, also suitable as snack for guests.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v4", :lines => 1..6
+
+:textile
+  This hook is run after the widget is added to its parent. Usually this mean when you call @me.root@ you get the root widget. It's a convenient way to cleanly encapsulate both logic and observers *inside your widget*.

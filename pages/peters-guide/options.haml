@@ -1,0 +1,16 @@
+:ruby
+  # :alias => :options
+
+%h1 Options processing
+
+
+.lefty
+  :textile
+    The #{page_link "dashboard", :portlets} already looks great.
+    
+    The widgets need customized titles, though. Being all about encapsulation, Apotomo naturally provides a way to pass options into widgets from outside.
+    
+%p
+  = img "portlet-title.png"
+
+= code "app/views/layouts/application.html.haml", :tag => "v5", :language => :haml

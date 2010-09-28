@@ -1,0 +1,80 @@
+$blueprint-font-size: 15px
+
+@import screen
+
+#sidebar
+  .links
+    @include column(3)
+  .rights
+    @include column(4)
+  .righter
+    @include column(4)
+    @include prepend(3)
+  
+.lefty
+  @include column(10)
+
+
+#sidebar ul, #sidebar ol
+  padding-left: 1em
+  list-style: none
+
+/* here goes my stuff */
+.CodeRay
+  font-size: 12px
+  margin-bottom: 1em
+  
+  .head
+    display: none
+
+h1, h2
+  font-family: Georgia
+
+body.bp pre
+  font: 1em/1.2em "lucida console",monospace
+  margin: 0.6em
+
+body.bp code
+  font-size: 0.9em
+
+#header
+  div
+    padding-top: 33px
+  img
+    float: left
+
+#header
+  margin-top: 9px
+  margin-bottom: 18px
+
+#footer
+  font-size: 0.8em
+
+body.bp ul
+  margin: 0 0 1.5em 0
+
+.picAndText, .pics, .textOnly
+  padding-bottom: 12px
+  overflow: hidden
+  img
+    float: left
+    width: 180px
+    padding-right: 12px
+
+
+
+
+
+.code_snippet
+  border: 1px solid silver
+  margin-bottom: 1em
+  
+  .code_header
+    background: #E6E6E6
+    font: 0.8em "lucida console",monospace
+    color: #848484
+    padding: 3px
+  
+  .CodeRay
+    border: none
+    margin-bottom: 0  

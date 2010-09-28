@@ -1,0 +1,65 @@
+!!! Strict
+%html
+  %head
+    = partial('shared/layout/head')
+  %body{:class => "two-col bp"}
+    
+  
+    #container
+      #header
+        %a(href="/")
+          = img 'reflexion-smooth-transparent-200.png'
+          =#img 'reflexion.png', :width => 216
+        %div
+          Widget Framework for Rails.
+        %hr
+      #sidebar
+        .links
+          Quick
+          
+          :textile  
+            * #{page_link "Download", "download"}
+            * #{link_to "Github", "http://github.com/apotonick/apotomo"}
+            * #{page_link "Help",    "help"}
+            * #{link_to "API",    "api"}
+            * #{link_to "Blog",    "http://blog.apotomo.de"}
+        
+        .rights
+          Web 2.0
+          
+          :textile  
+            * #{link_to "Follow us", "http://github.com/apotonick"}
+            * #{link_to "Feed us", "http://github.com/apotonick/apotomo"}
+          
+        .rights
+          Learn
+          
+          :textile
+            * #{page_link "Introduction", "introduction"}
+            * #{page_link "Drag&Drop",    "dragndrop"}
+            * #{page_link "Event bubbling", "bubbling"}
+            * #{page_link "Portlets",    "portlets"}
+            * #{page_link "Options and hooks",    "options"}
+            * #{page_link "jQuery", "autocomplete"}
+            * #{page_link "Testing Widgets", "testing"}
+        
+        .righter
+          Discussion
+          
+          :textile
+            * #{page_link "Stateless widgets", "stateless"}
+            * #{page_link "Stateful widgets", "stateful"}
+          
+        .righter
+          Party
+          
+          :textile
+            * #{link_to "On the Road", "road"}
+      
+      #content
+        = yield
+        
+      #footer
+        %hr
+        :textile
+          Apotomo is a ["Nick Sutterer":http://nicksda.apotomo.de] product. 

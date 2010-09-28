@@ -1,0 +1,32 @@
+:ruby
+  # :alias => :download
+
+%h1 Download and Installation
+
+There will be Rails 3.0 support, soon.
+
+%h2 Rails 2.3
+
+%p
+  Gems rule.
+
+:coderay
+  #!bash
+  $ gem install apotomo
+
+:textile
+  In your @environment.rb@ should be something like
+
+:coderay
+  #!ruby
+  config.gem "apotomo"
+  
+:textile
+  And, if you like jQuery better than prototype:
+
+:coderay
+  #!ruby
+  Apotomo.js_framework = :jquery
+
+:textile
+  Be sure to check out the #{page_link "introduction guide", 'introduction'}.

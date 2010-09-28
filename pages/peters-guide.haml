@@ -1,0 +1,141 @@
+:ruby
+  # :alias => 'introduction'
+
+- @page_title = "Introduction to Widgets"
+
+%h1 Peter's Guide
+
+:textile
+  This is a brief tutorial for setting up a small Rails app with Apotomo widgets. It's meant as a starting point for learning Apotomo, so grab a beer and read on!
+
+  The code is available in a ["git repo":http://github.com/apotonick/apotomo_peters_guide/tree/v1], feel free to clone.
+
+  During the course we are developing a rich application for twittering. The first widget looks like this. Pretty straight-forward.
+
+= img "tweeter.png"
+
+%h2 Installation
+
+%p
+  You already got Rails? Ok.
+
+:coderay
+  #!bash
+  
+  $ rails bar
+      create  
+      create  app/controllers
+      create  app/helpers
+      create  app/models
+      create  app/views/layouts
+      ...
+
+:textile
+  Now, rewrite @config/environment.rb@:
+
+:coderay
+  #!ruby
+  RAILS_GEM_VERSION = '2.3.8' unless defined? RAILS_GEM_VERSION
+  require File.join(File.dirname(__FILE__), 'boot')
+  
+  Rails::Initializer.run do |config|
+    config.gem "haml"
+    config.gem "cells", :version => '3.3.4'
+    config.gem "apotomo"
+  end
+  
+  Apotomo.js_framework = :jquery
+  
+:textile
+  We're gonna use JQuery in this examples.
+  
+  Install the gems by hand, if you like:
+
+:coderay
+  #!bash
+  
+  $ gem install haml cells apotomo 
+
+%h2 Layout
+
+:textile
+  Next, we could need a layout.
+  
+= code("app/views/layouts/application.html.haml", :tag => "v1", :language => :haml)
+
+%h2 The Tweet model
+
+:textile
+  Say we're writing a small widget that let's you post and displays your recent posts. We could need a Tweet model for that.
+  
+:coderay
+  #!bash
+  $ script/generate model tweet text:string
+  $ rake db:migrate
+
+
+%h2 Controller
+
+:textile
+  Widgets are usually embedded into controllers, so there should be one.
+  
+:coderay
+  #!bash
+  $ script/generate controller dashboard index
+      exists  app/controllers/
+      exists  app/helpers/
+      ...
+
+%h2 The first Widget!
+  
+:textile
+  Writing a tweet widget is as easy as creating a new controller.
+  
+:coderay
+  #!bash
+  $ script/generate widget twitter_widget display_form --haml
+      exists  app/cells/
+      create  app/cells/twitter_widget
+      exists  test/widgets
+      create  app/cells/twitter_widget.rb
+      create  app/cells/twitter_widget/display_form.html.haml
+      create  test/widgets/twitter_widget_test.rb
+
+      
+:textile
+  The widget class should look as follows.
+
+= code("app/cells/twitter_widget.rb", :tag => "v1")
+
+:textile
+  The corresponding view for @display_form@ is rendered in line 6. It contains the same tiresome markup as any other view in Rails.
+
+= code("app/cells/twitter_widget/display_form.html.haml", :tag => "v1", :language => :haml)
+
+
+%h2 Putting the tweeter in the dashboard
+
+:textile
+  To plug your new widget in a controller, the controller should look like this.
+
+= code("app/controllers/dashboard_controller.rb", :tag => "v1")
+
+:textile
+  Change the index view.
+  
+= code("app/views/dashboard/index.haml", :tag => "v1")
+
+
+%h2 Running it
+
+:textile
+  Next, start the engine
+
+:coderay
+  #!bash
+  $ script/server
+
+:textile
+  ...and browse to @http://localhost:3000/dashboard@
+  
+  Happy "tweeting".
