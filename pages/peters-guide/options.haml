@@ -13,4 +13,24 @@
 %p
   = img "portlet-title.png"
 
-= code "app/views/layouts/application.html.haml", :tag => "v5", :language => :haml
+= code "app/controllers/dashboard_controller.rb", :tag => "v6", :lines => 4..7
+
+:textile
+  We can provide arbitrary options in the @widget@ method (line 6).
+
+= code "app/cells/trashbin_widget.rb", :tag => "v6"
+
+:markdown
+  The widget can subsequently access the `@opts` hash and process its parameters (line 21).
+
+:textile
+  Note that we have to call @setup!@ in the start state as well as in the trigger states, as our widget is stateless.
+
+  h2. Using hooks
+  
+  Fortunately, Apotomo already has a hook for exactly that job.
+
+= code "app/cells/trashbin_widget.rb", :tag => "v7"
+
+:textile
+  The @after_initialize@ hook (line 4) will execute all attached callbacks after the widget was created. It is somehow comparable to a @before_filter@ in Rails controllers.
