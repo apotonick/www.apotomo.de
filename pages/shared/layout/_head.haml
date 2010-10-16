@@ -1,12 +1,14 @@
 %title
-  = page_title
+  =# page_title
+  - page =@staticmatic.pages.find_file(current_page.sub(".html", ".haml"))
+  = (page.title || page.alias.to_s.capitalize) + " | Apotomo.de"
 - if @page_description
   %meta{:name => "description", :content => @page_description}
 = stylesheets :site
 = stylesheets :coderay
-= javascripts('http://www.google.com/jsapi')
+=# javascripts('http://www.google.com/jsapi')
 :javascript
-  google.load("jquery", "1.4.2");
+  //google.load("jquery", "1.4.2");
   // google.load("jqueryui", "1.8.1");
   // google.load("chrome-frame", "1.0.2");
 = javascripts('application')

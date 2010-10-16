@@ -76,14 +76,13 @@
 :textile 
   h2. Replace gets update
   
-.lefty
-  :textile
-    Now what happens if you post a new tweet?
-    
-    The state adds the tweet (line 14) and *replaces the content block itself* with the re-rendered view (line 17).
-    This is not exactly what we want - see on the right.
-
-= img "replace-portlet.png", :class => "right last"
+:textile
+  #{img "replace-portlet.png", :class => "right"}
+  
+  Now what happens if you post a new tweet?
+  
+  The state adds the tweet (line 14) and *replaces the content block itself* with the re-rendered view (line 17).
+  This is not exactly what we want - see on the right.
 
 
 = code "app/cells/twitter_widget.rb", :tag => "v4", :lines => 13..18

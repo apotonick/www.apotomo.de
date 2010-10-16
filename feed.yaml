@@ -1,0 +1,27 @@
+atom:
+  id: http://apotomo.de
+  title: "Apotomo: Web Components for Rails"
+  link: http://apotomo.de
+  updated: 2010-10-02T18:30:02+02:00
+  
+  author:
+    name:   Nick Sutterer
+    email:  apotonick@gmail.com
+    uri:    http://nicksda.apotomo.de
+  
+  generator: mess-feed
+  
+  entries:
+    -
+      id: http://apotomo.de/peters-guide/ajax-validation.html
+      title: AJAX Form Validation
+      updated: 2010-10-12T13:30:02+02:00
+      link: http://apotomo.de/peters-guide/ajax-validation.html
+      summary: This lection discusses how to wire web forms to models and handle submission, validation and saving via AJAX. Using widget events this is no longer a tedious task, but fun!
+    
+    -
+      id: http://apotomo.de/peters-guide.html
+      title: Introduction to Web Components for Rails
+      updated: 2010-10-01T18:30:02+02:00
+      link: http://apotomo.de/peters-guide.html
+      summary: We finally have tutorials for using Apotomo in Rails where we build a dashboard with various widgets. The tutorial features an introduction, events and event bubbling discussions as well as web-2.0 topics like drag&drop, jQuery and more. Be sure to subscribe to this feed to get updates about new lections!

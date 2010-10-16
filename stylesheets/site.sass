@@ -10,10 +10,6 @@ $blueprint-font-size: 15px
   .righter
     @include column(4)
     @include prepend(3)
-  
-.lefty
-  @include column(10)
-
 
 #sidebar ul, #sidebar ol
   padding-left: 1em
@@ -50,21 +46,31 @@ body.bp code
 #footer
   font-size: 0.8em
 
-body.bp ul
-  margin: 0 0 1.5em 0
-
-.picAndText, .pics, .textOnly
-  padding-bottom: 12px
-  overflow: hidden
-  img
-    float: left
-    width: 180px
-    padding-right: 12px
-
-
-
-
-
+body.bp
+  ul
+    margin: 0 0 1.5em 0
+  
+  a, a:visited
+    color: #FF18BB
+  a:hover
+    color: black
+  p
+    img.right
+      margin: 0 0 0 1.5em
+  
+  a.version, a.version:visited
+    border: 1px solid #505050
+    padding: 2px 2px 2px 2px
+    font: 0.3em Arial
+    text-decoration: none
+    color: #505050
+    background-color: #acacac
+    float: right
+    margin-left: 3px
+  
+  a.version:hover
+    color: #fff
+  
 .code_snippet
   border: 1px solid silver
   margin-bottom: 1em
@@ -78,3 +84,6 @@ body.bp ul
   .CodeRay
     border: none
     margin-bottom: 0  
+    
+    .no
+      background-color: #FBB8E7

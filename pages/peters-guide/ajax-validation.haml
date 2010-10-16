@@ -1,0 +1,85 @@
+:ruby
+  # :alias => :validating, :title => "AJAX model validation"
+
+%h1 Model Validation via AJAX
+
+:textile
+  #{img "model-validation.png", :class => :right}
+  
+  Almost *every form has a backing model* it is connected to. Whereas the form is the model's GUI counterpart collecting input, the models job is to validate and save this data.
+  
+  When it comes to *wiring presentation to models*, small fine-grained widgets strike again.
+
+
+  Let's validate the new tweet in our @TwitterWidget@ and display some standard error message in case of insufficient input.
+  
+  
+  h2. Validation in models
+
+  First, we setup some constraints.
+  
+= code "app/models/tweet.rb", :tag => "v11", :lines => 1..2
+
+:textile
+  h2. Form tweaking
+  
+  In the next step we use the rails form helpers for setting up a the input field quickly.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 18..23
+
+:textile
+  The processing state *triggered by the form submission* simply uses Rails' popular model methods to validate and save the fresh tweet item (line 18-19).
+  
+  Updating the widget works by sending back a re-rendered @display_form@ view. Since we changed the widget code, we also have to change things in the form view (line 22).
+  
+= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v11", :lines => 4..11
+
+:textile
+  The @form_for@ does all the work for us (line 7). When clicking the "Tweet!" button, the form is sent to the unobstrusive url and triggering a @:submit@ events.
+  
+  h2. How to process the submission, again?
+  
+  Remember, the widget handling the form is listening to that event.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 1..2
+
+:textile
+  Submitting an empty tweet yields an error message in our form. Awesome.
+  
+  It didn't take more than a few lines widget code to wire the form to a model!
+  
+  h2. Bugs!
+  
+  Several things are not working correctly right now (by design!).
+  
+  * After submission, the new tweet doesn't show up
+  * When deleting items, the list breaks
+  
+  Why not use this bugs to learn a bit more about Apotomo?
+  
+  
+  h2. Where is the new tweet?
+  
+  Currently, we set up the tweets list in a @has_widgets@ block.
+
+= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 8..12
+
+:textile
+  The problem here is, that @has_widget@ is executed *once at initialization* in every request. In our case, however, we have a dynamic list where we need to add and remove childs in state methods. We should refactor our widget a bit.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v13", :lines => 8..20
+
+:textile
+  In @synchronize_with_model!@ we first remove all children (line 13), then add items only if they are new (line 16-18).
+  
+  Notice the brief @has_widgets@ block (line 9) - it is evaluated *in widget instance context*, so you may call instance methods directly.
+  
+  
+  h2. Removing still sucks
+  
+  When dumping an item on the trashbin, it doesn't vanish from the list. Yeah, we have to remove the *widget representation*, too.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v13", :lines => 35..39
+
+:textile
+  A call to our synchronization method fixes things (line 36).

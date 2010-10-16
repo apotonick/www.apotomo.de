@@ -1,30 +1,25 @@
 :ruby
-  # :alias => "stateful"
+  # :alias => "stateful", :title => "Discussion: Statefulness"
   
-%h1 Stateful Widgets
+:textile
+  h1. Stateful Widgets
+  
+  Stateful widgets freeze themselves to the session and automatically restore their state in the next request. _State_ here means 
+  # structure - where each widget preserves its children - and 
+  # instance variables - which survive between requests
 
-%p
-  :textile
-    Stateful widgets freeze themselves to the session and automatically restore their state in the next request. _State_ here means 
-    # structure - where each widget preserves its children - and 
-    # instance variables - which survive between requests
-
-%p
   This can be very helpful when building sophisticated widget trees, like forms and wizards with workflows. However, often stateless widgets will fit your needs and involve less internal complexity.
 
-%h2 Example?
-
-%p
+  h2. Example?
+  
+  #{img "stateful-form.png", :class => :right}
+  
   Why not use that form.
   
-.picAndText
-  = img "stateful-form.png"
+  We have a container widget that keeps the upload fields, one widget instance per field.
+  When clicking "Attach another file" we trigger an event and add another upload field in the container.
   
-  %p
-    We have a container widget that keeps the upload fields, one widget instance per field.
-    When clicking "Attach another file" we trigger an event and add another upload field in the container.
-  %p
-    During the whole process, the widget developer doesn't care about state-housekeeping at all.
+  During the whole process, the widget developer doesn't care about state-housekeeping at all.
 
 :coderay
   #!ruby
@@ -39,12 +34,9 @@
   We add stateful widgets to our controller with @#use_widgets@ in an action. These @#use_widgets@ blocks are invoked only once per session, once called, stateful widgets will stick to root till the session is cleared.
   
   It is also possible to add stateless widgets here, they won't survive the next request, though.
-  
-[packaging]
 
-%h2 Adding widgets dynamically
+  h2. Adding widgets dynamically
 
-:textile
   The @Form::Base@ widget initially adds one upload field and renders.
 
 :coderay
@@ -72,16 +64,15 @@
   
   In @#add_field@ we just add another stateful widget to the container, render that new kid and send back a JavaScript call to insert the new upload field under the first.
 
-%h2 Keeping instance variables
-.picAndText
-  = img "stateful-form-elapsed-time.png"
+  h2. Keeping instance variables
   
-  :textile
-    A really handy feature with Statefuls is that they restore their instance variables in each request.
-    
-    Say we wanted to display the elapsed time between the first rendering of our form widget and the time we added a new field. An absolutely useless requirement for a form, isn't it?
-    
-    Anyway, we'd change the code like this.
+  #{img "stateful-form-elapsed-time.png", :class => :right}
+  
+  A really handy feature with Statefuls is that they restore their instance variables in each request.
+  
+  Say we wanted to display the elapsed time between the first rendering of our form widget and the time we added a new field. An absolutely useless requirement for a form, isn't it?
+  
+  Anyway, we'd change the code like this.
 
 :coderay
   #!ruby
@@ -105,32 +96,29 @@
 :markdown
   Notice how we define `@created_at` in the initial state. As time and requests go by, there might be a click on "Attach another file" which triggers `#add_field`.
   
+:textile
   Each time an upload field is added, we compute the elapsed time. The ivar `@created_at` is around as if there had been no request at all!
 
-%h2 Discussion
+  h2. Discussion
 
-.picAndText
-  = img "stateful-form-fields-overflow.png"
+  #{img "stateful-form-fields-overflow.png", :class => :right}
   
-  :textile
-    Although there might be multiple requests between the initial rendering of the form and the click on "Attach another file" the whole widget tree starting at @'uploads'@ will remain the same. If you add 20 new fields, they will still be there, even after 200 requests.
+  Although there might be multiple requests between the initial rendering of the form and the click on "Attach another file" the whole widget tree starting at @'uploads'@ will remain the same. If you add 20 new fields, they will still be there, even after 200 requests.
     
     The same applies when removing widgets, they're lost and gone forever.
     
     It is important to understand that Statefuls just provide a convenient way for something you could do yourself with state _less_ widgets, too.
 
 
-%h3 Stale session while developing statefuls
+  h2. Stale session while developing statefuls
 
-:textile
   When developing statefuls you often want to flush the widget tree, as classes, initial structure or content changed.
    
   # Add @?flush_widgets=1@ to your url to instruct Apotomo to flush the existing widget session at request start.
   # You might also fire @$ rake db:sessions:clear@
   
-%h2 Watch out!
+  h2. Watch out!
 
-:textile
   We got two limitations when using statefuls.
   * Only add them inside a controller action in a @#use_widgets@ block
   * Don't try to attach a stateless widget to a stateful, that will crash

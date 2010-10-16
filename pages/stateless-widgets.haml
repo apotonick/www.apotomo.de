@@ -1,9 +1,9 @@
 :ruby
-  # :alias => "stateless"
-
-%h1 Stateless Widgets
+  # :alias => "stateless", :title => "Discussion: Statefulness"
 
 :textile
+  h1. Stateless Widgets
+
   Stateless widgets are not persistent and simply disappear after the request is finished. That sounds stupid. However, in most cases less complex statelessis will do.
   
   Apotomo provides a few methods that make using statelessis very simple, and you don't have to care about re-establishing your stateless environment in each request.
@@ -12,17 +12,14 @@
   
   Let's see how that would work.
 
-%h2 Eh, example?
+  h2. Eh, example?
 
-.picAndText
-  = img "stateless-todo-quickbox.png"
+  #{img "stateless-todo-quickbox.png", :class => :right}
   
-  :textile
-    For the imaginary Todo application we have a box that shows the last 5 items. To maximize usability we also provide an input field which updates the item list accordingly.
+  For the imaginary Todo application we have a box that shows the last 5 items. To maximize usability we also provide an input field which updates the item list accordingly.
     
-    Great, isn't it?
+  Great, isn't it?
 
-:textile
   That feature could be implemented with 3 widgets
   
   * the item list
@@ -45,9 +42,7 @@
 :textile
   Doing so, Apotomo will setup the widget tree in every request to @DashboardController@ and you can instantly render your @box@ without having to worry about the widget setup.
   
-%h2 Fat widgets, slim controllers
-
-:textile
+  h2. Fat widgets, slim controllers
 
   Note that we called @has_widgets@ on the controller class, not in an action. That's the difference between stateful and -less!
   
@@ -84,9 +79,8 @@
 :textile
   Almost the same except that we moved knowledge about an internal widget setup from the controller to the top widget.
 
-%h2 Event Handlers
+  h2. Event Handlers
 
-:textile
   In stateless widgets, handlers should be attached in _class_ context. Otherwise they'll be lost in a following request.
 
 

@@ -1,5 +1,5 @@
 :ruby
-  # :alias => 'introduction'
+  # :alias => 'introduction-2.3'
 
 - @page_title = "Introduction to Widgets"
 
@@ -9,23 +9,23 @@
   = page_link "3.0", 'introduction', :class => :version
   
 :textile
-  This is a brief tutorial for setting up a small *Rails 3* app with Apotomo widgets. It's meant as a starting point for learning Apotomo, so grab a beer and read on!
+  This is a brief tutorial for setting up a small *Rails 2.3* app with Apotomo widgets. It's meant as a starting point for learning Apotomo, so grab a beer and read on!
 
-  The code is available in a ["git repo":http://github.com/apotonick/apotomo_peters_guide/tree/v1], feel free to clone.
+  The code is available in a ["git repo":http://github.com/apotonick/apotomo_peters_guide], feel free to clone.
 
   During the course we are developing a rich application for twittering. The first widget looks like this. Pretty straight-forward.
 
 = img "tweeter.png"
 
-%h2 Installation
+:textile
+  h2. Installation
 
-%p
   You already got Rails? Ok.
 
 :coderay
   #!bash
   
-  $ rails new bar
+  $ rails bar
       create  
       create  app/controllers
       create  app/helpers
@@ -34,25 +34,30 @@
       ...
 
 :textile
-  Now, rewrite your @Gemfile@:
+  Now, rewrite @config/environment.rb@:
 
-=# code "Gemfile", :tag => "v15"
 :coderay
   #!ruby
-  source 'http://rubygems.org'
-
-  gem 'rails', '3.0.0'
-  gem 'apotomo', '~>1.0', :require => 'apotomo'
-  gem 'haml'
-  gem 'sqlite3-ruby', :require => 'sqlite3'
-
-
+  RAILS_GEM_VERSION = '2.3.8' unless defined? RAILS_GEM_VERSION
+  require File.join(File.dirname(__FILE__), 'boot')
+  
+  Rails::Initializer.run do |config|
+    config.gem "haml"
+    config.gem "cells", :version => '3.3.4'
+    config.gem "apotomo"
+  end
+  
+  Apotomo.js_framework = :jquery
+  
 :textile
-  Install the gems with bundler.
+  We're gonna use JQuery in this examples.
+  
+  Install the gems by hand, if you like:
 
 :coderay
   #!bash
-  $ bundle install
+  
+  $ gem install haml cells apotomo 
 
 %h2 Layout
 
@@ -68,7 +73,7 @@
   
 :coderay
   #!bash
-  $ rails generate model tweet text:string
+  $ script/generate model tweet text:string
   $ rake db:migrate
 
 
@@ -79,7 +84,7 @@
   
 :coderay
   #!bash
-  $ rails generate controller dashboard index
+  $ script/generate controller dashboard index
       exists  app/controllers/
       exists  app/helpers/
       ...
@@ -91,7 +96,7 @@
   
 :coderay
   #!bash
-  $ rails generate apotomo:widget twitter_widget display_form --haml
+  $ script/generate widget twitter_widget display_form --haml
       exists  app/cells/
       create  app/cells/twitter_widget
       exists  test/widgets
@@ -131,7 +136,7 @@
 
 :coderay
   #!bash
-  $ rails s
+  $ script/server
 
 :textile
   ...and browse to @http://localhost:3000/dashboard@

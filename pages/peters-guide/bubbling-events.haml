@@ -13,18 +13,15 @@
 
 = code "app/cells/trashbin_widget.rb", :tag => "v3", :lines => (8..10)
 
-.lefty
-  :textile
-    The triggered event starts from @bin@, climbs up and bubbles to @root@. To grab it we have to attach an observer to either @bin@ or @root@.
-    
-    How could @parrot@ catch that event itself?
-    
-    The answer is: *it can't*. We have to put the observer somewhere on the way between the trashbin and root.
-
-%p
-  = img "event-bubbling.png", :class => "right last"
-
 :textile
+  #{img "event-bubbling.png", :class => "right"}
+  
+  The triggered event starts from @bin@, climbs up and bubbles to @root@. To grab it we have to attach an observer to either @bin@ or @root@.
+  
+  How could @parrot@ catch that event itself?
+  
+  The answer is: *it can't*. We have to put the observer somewhere on the way between the trashbin and root.
+
   h2. The dirty approach
   
   You may simply put the observer into your controller's @has_widgets@ block, as we did it above. This works fine, however, your controller now know details about the widgets that should be hidden from it.

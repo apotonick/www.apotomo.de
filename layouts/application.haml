@@ -11,7 +11,7 @@
           = img 'reflexion-smooth-transparent-200.png'
           =#img 'reflexion.png', :width => 216
         %div
-          Widget Framework for Rails.
+          Web Components for Rails.
         %hr
       #sidebar
         .links
@@ -29,10 +29,10 @@
           
           :textile  
             * #{link_to "Follow us", "http://github.com/apotonick"}
-            * #{link_to "Feed us", "http://github.com/apotonick/apotomo"}
+            * #{img "feed.png"} #{link_to "Feed us", "http://feeds.feedburner.com/Apotomo"}
           
         .rights
-          Learn
+          <b>Learn</b>
           
           :textile
             * #{page_link "Introduction", "introduction"}
@@ -40,8 +40,12 @@
             * #{page_link "Event bubbling", "bubbling"}
             * #{page_link "Portlets",    "portlets"}
             * #{page_link "Options and hooks",    "options"}
+            * #{page_link "Nesting", "nesting"}
+            * #{page_link "AJAX validation", "validating"}
+            * #{page_link "Namespacing", "namespacing"}
             * #{page_link "jQuery", "autocomplete"}
-            * #{page_link "Testing Widgets", "testing"}
+            * #{page_link "Testing", "testing"}
+            * #{page_link "Pagination", "pagination"}
         
         .righter
           Discussion
@@ -54,7 +58,7 @@
           Party
           
           :textile
-            * #{link_to "On the Road", "road"}
+            * #{page_link "On the Road", "road"}
       
       #content
         = yield
