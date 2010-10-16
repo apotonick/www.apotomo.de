@@ -1,5 +1,5 @@
 :ruby
-  # :alias => :nesting, :title => "Composed widgets"
+  # :alias => "nesting-2.3", :title => "Composed widgets"
 
 %h1
   Composed widgets
@@ -25,7 +25,7 @@
 
 :coderay
   #!bash
-  rails generate apotomo:widget tweet_widget display --haml
+  script/generate widget tweet_widget display --haml
       exists  app/cells/
       create  app/cells/tweet_widget
       exists  test/widgets
@@ -65,7 +65,7 @@
   
   When calling @render@ without the @:render_children => false@ "option":http://rdoc.info/github/apotonick/apotomo/master/Apotomo/Widget:render, children will be rendered automatically.
   
-= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v15", :language => :haml, :lines => 1..5
+= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v9", :language => :haml, :lines => 1..5
 
 :textile
   Nothing really changed here as well - except that we simply access the @rendered_children@ hash which contains the rendered child views already (line 2). Pretty handy.
