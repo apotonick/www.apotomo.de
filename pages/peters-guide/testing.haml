@@ -1,0 +1,73 @@
+:ruby
+  # :alias => :testing
+
+%h1 Testing widgets
+
+
+:textile
+  #{img "bomb.gif", :class => :right}
+  
+  A lot of code has been written in the last lections. What about testing?
+  
+  In the traditional Rails world a functional test usually means defining your expectations about a complete rendered page. It is like one monolithic test case asserting every little aspect of your page. You cannot easily write *tests against fragments, or partials*.
+  
+  Luckily, widgets not only improve your overall architecture but also provide a convenient, clean way for testing. You can write *small-scoped tests against your components* which are less complex by covering the widget's behaviour only - and nothing more!
+  
+  When carefully tested, widgets can be run safely in any controller.
+  
+  
+  h2. Test approaches
+  
+  Naturally, there are different ways to test widgets. You might use
+  * basic @ActionController::TestCase@-like tests
+  * Webrat and Selenium
+  * Capybara backed tests.
+  
+  This guide discusses the first, simple approach.
+  
+  
+  h2. Setting things up
+  
+  In order to set up widgets in your test, you simply use syntax familiar from controllers.
+  
+= code "test/widgets/trashbin_widget_test.rb", :tag => "v16", :lines => 1..7
+  
+:textile
+
+  Deriving the test case from @Apotomo::TestCase@ includes all necessary methods.
+  
+  The tested widget (tree) is set up in a @has_widgets@ block (line 5-7).
+  
+  
+  h2. Testing the rendering
+  
+  We now check if rendering our trashbin widget really displays a bin.
+  
+= code "test/widgets/trashbin_widget_test.rb", :tag => "v16", :lines => 9..12
+  
+:textile
+  Where @render_widget@ invokes the start state, @assert_select@ checks for CSS selectors as we know from functional tests.
+
+  
+  h2. Testing interactivity
+  
+  The opposite direction - *triggering events and updating the page* - should be tested as well. This is where most of the bugs emerge, so don't _forget_ that part of your tests.
+  
+    
+= code "test/widgets/trashbin_widget_test.rb", :tag => "v16", :lines => 13..23
+  
+:textile
+  First, we assert our fixtures contain exactly what we want (line 15). Depending on your test setup, you might skip that step.
+  
+  In the next step we *simulate an initial rendering* of the widget (line 17). This is what usually happens in a controller view.
+  
+  The user dropping a tweet on the bin and thus triggering a @:drop@ event is simulated subsequently (line 19). Now, *the event is physically fired* in the source widget and hopefully provokes some responses.
+  
+  We then test if the widget sends back some updating JavaScript (line 20).
+  
+  The last assertion ensures the bin really deleted the dumped tweet item (line 22).
+  
+  
+  h2. Where to go?
+  
+  Assertions and @Apotomo::TestCase@ are still in development, we are collecting best-practices and feature requests, so let us know what's missing.

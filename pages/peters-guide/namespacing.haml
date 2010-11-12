@@ -1,0 +1,53 @@
+:ruby
+  # :alias => :namespacing
+
+%h1 Namespacing widgets
+
+This guide is for you, Kevin!
+
+
+:textile
+  #{img "namespacing.png", :class => :right}
+  
+  Brave component-thinking widget developers soon get to the point where they have *too many widget files in the @cells/@ directory.*
+  
+  Time to tidy up.
+  
+  Similar to controllers, widgets can be namespaced by pushing the classes into modules and files into corresponding directories.
+  
+  h2. Moving files
+  
+  Let's move all the twittering widgets in the @Twitter@ namespace.
+  
+  First, I create a new *namespace directory* @cells/twitter@ and move everything else into it. Note how I renamed @twitter_widget@ to @panel@ - just to demonstrate that widget names are not restricted.
+  
+  h2. Adding modules
+  
+  Since the three widgets now reside in @twitter/@ Rails expects them to be wrapped in a @Twitter@ module.
+  
+= code("app/cells/twitter/panel.rb", :tag => "v17", :lines => 1..3)
+
+:textile
+  This is really nothing more than adding a module wrapper. Easy, isn't it?
+  
+= code("app/cells/twitter/trashbin_widget.rb", :tag => "v17", :lines => 1..3)
+
+:textile
+  Just put an embracing module around all your twitter-related widgets.
+
+  
+  h2. Update the widget trees
+  
+  Of course, we shouldn't forget to update the controller's @has_widgets@ blocks as they refer to the widget class name.
+  
+= code("app/controllers/dashboard_controller.rb", :tag => "v17", :lines => 1..7)
+
+:textile
+  Namespaces are strings where a slash separates modules and classes - as in @"twitter/panel"@.
+  
+  Don't forget to fix your widget tests, too.
+
+= code("test/widgets/trashbin_widget_test.rb", :tag => "v17", :lines => 1..7)
+
+:textile
+  You _are_ testing, aren't you?
