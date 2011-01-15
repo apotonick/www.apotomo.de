@@ -56,7 +56,7 @@
         
         new_upload_markup = self['upload_2'].invoke  # render the new widget.
         
-        render :js => "Element.insert('\#{name}', { below: '\#{new_upload_markup}' });"
+        render :js => "Element.insert('\#{widget_id}', { below: '\#{new_upload_markup}' });"
     end
 
 :textile
@@ -90,7 +90,7 @@
         
         new_upload_markup += "Added after \#{(Time.now - @created_at)} secs"  # We still have @created_at.
         
-        render :js => "Element.insert('\#{name}', { below: '\#{new_upload_markup}' });"
+        render :js => "Element.insert('\#{widget_id}', { below: '\#{new_upload_markup}' });"
     end
 
 :markdown

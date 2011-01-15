@@ -1,6 +1,33 @@
 :ruby
   # :title => "A widget framework for Rails"
 
+:javascript
+  $(document).ready(function() {
+
+  $("#header img").qtip({
+    content: 'Help us promoting!\nVote for an <a href="http://feedback.railscasts.com/forums/77-episode-suggestions/suggestions/624545-apotomo">Apotomo Railscast!</a>',
+    position: {
+      corner: {
+        tooltip:  "topLeft",
+        target:   "bottomMiddle"
+      }
+    },
+    show: {
+      when: false,
+      ready: true
+    },
+    hide: false,
+    style: {
+      border: {                      width: 1,                      radius: 10                   },                   
+      padding:    10,
+      top: 45,
+      textAlign:  'center',
+      tip:        true,
+      name:       'dark'
+    }
+  });          
+  });
+
 :textile
   h1. Widgets for Rails
 
@@ -12,25 +39,27 @@
   
   #{img "portlets-200.png", :class => "right"}
     
-  *Apotomo is a true widget framework for Rails.* Widgets in Apotomo are based on "Cells":http://cells.rubyforge.org and provide reuseable view components with bubbling events. They know when and how to update themselves via AJAX and offer optional statefulness for free!
+  *Apotomo is a true MVC widget framework for Rails.* Widgets are based on "Cells":http://cells.rubyforge.org and provide reuseable view components. Having bubbling events, they know when and how to update themselves via AJAX!
   
   
   Working with Apotomo widgets almost *feels like developing GUI components* - in a Rails environment.
+
+.feature
+  %h3 Getting started
+  %ul
+    %li Check #{page_link "our tutorial", :introduction} stepping through Apotomo's features.
+    %li #{page_link "Get help", :help} within minutes.
   
-  Apotomo helps you cleaning up your controller and view code, *improves your overall software-architecture* and makes your components bullet-proof with sustainable tests. It is perfect for mid-size development teams. Web Components rule!
-  
-  h2. Statefulness
-  
-  Sometimes statefulness comes in handy. With Apotomo, you can write both stateful and stateless widgets. Stateful widgets currently save state in the session.
-  
-  We also have some running research on how to save state in the url or hidden fields. And how stateless widgets can benefit from that, too.
-  
-  h2. Events
-  
-  The framework exposes a small but powerful event system. Events from the browser are routed to the rails app where widgets can process observed events and update themselves in the page.
-  
-  h2. Javascript frameworks
-  
-  It's not a JavaScript library. Apotomo plays great together with all JavaScript frameworks like jQuery, Prototype, RightJS or YUI.
-  
-  Helpers for page updates are shipped with Apotomo and help you jump-starting your development - however you're free to emit your own JavaScript, whenever, wherever. 
+.feature
+  %h3 Make better software
+  %ul
+    %li Apotomo improves your software architecture.
+    %li Helps writing bullet-proof #{page_link "sustainable widget tests", :testing}.
+    %li No merges! Teams can work on separate components.
+
+.feature.last
+  %h3 More features
+  %ul
+    %li Have #{page_link "bubbling events", :bubbling} from your browser in Ruby.
+    %li Javascript agnostic. Use it with jQuery, Prototype, RightJS or YUI.
+    %li Make widgets #{page_link "stateful", "stateful"} where it helps. 

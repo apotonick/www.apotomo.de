@@ -18,7 +18,26 @@
 :textile
   Clicking on the heart icon flags the respective @Tweet@ row as _loved_ and redraws the list item.  Let's make the @TwitterWidget@ a container where each loveable tweet item is a separate child widget.
   
+  
+  h2. Making tweets loveable
+  
+  First add the new field to the tweets table.
+  
+:coderay
+  #!bash
+  rails generate migration add_loved_flag_to_tweet loved:boolean
 
+:textile
+  And execute the migration
+
+:coderay
+  #!bash
+  rake db:migrate
+
+:textile
+  Now it's time for another widget, yeah!
+  
+  
   h2. Creating a new widget
 
   The generator strikes back - we call it @TweetWidget@ as it displays one item, only.
