@@ -1,7 +1,7 @@
 :ruby
   # :alias => "dragndrop"
 
-- @page_title = "Drag&Drop with widgets" 
+- @page_title = "Drag&amp;Drop with widgets" 
 
 %h1
   Drag&Drop with widgets
@@ -9,7 +9,7 @@
   = page_link "3.0", 'dragndrop', :class => :version
 
 :textile
-  In the #{page_link "previous lesson", "introduction"} we did a simple tweeter. Now what if we'd like to dump an item? Besides that twitter doesn't allow deleting (do they?), let's start writing a trashbin widget.
+  In the #{page_link "previous lesson", "introduction"} we covered a simple tweeter. Now what if we'd like to dump an item? Besides that twitter doesn't allow deleting (do they?), let's start writing a trashbin widget.
 
 = img "dragndrop.png"
 
@@ -18,7 +18,7 @@
 
   h2. Dragging items
   
-  Drag&Drop with JavaScript is well done in ["jQuery UI":http://jqueryui.com/demos/draggable/]. We need to include the new JS lib in our project.
+  Drag&amp;Drop with JavaScript is well done in ["jQuery UI":http://jqueryui.com/demos/draggable/]. We need to include the new JS lib in our project.
   
 = code "app/views/layouts/application.html.haml", :tag => "v2"
 =# diff "app/views/layouts/application.html.haml", :tag_a => "v1", :tag_b => "v2"
@@ -52,7 +52,7 @@
 = code "app/cells/trashbin_widget.rb", :tag => "v2"
 
 :textile
-  Our standard view draws the bin image that I'd stole somewhere.
+  Our standard view draws the bin image (that I've stolen from somewhere).
 
 = code "app/cells/trashbin_widget/display.html.haml", :tag => "v2", :language => :haml
 

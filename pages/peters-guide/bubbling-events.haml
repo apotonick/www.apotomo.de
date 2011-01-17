@@ -24,18 +24,18 @@
 
   h2. The dirty approach
   
-  You may simply put the observer into your controller's @has_widgets@ block, as we did it above. This works fine, however, your controller now know details about the widgets that should be hidden from it.
+  You may simply put the observer into your controller's @has_widgets@ block, as we did it above. This works fine, however, your controller now knows details about the widgets that should be hidden from it.
   
   What if the event name changes or the triggering state name? The controller shouldn't know things like that.
   
-  You are better of by putting observers into the widgets itself.
+  You are better off putting observers into the widgets themselves.
   
   
   h2. A less dirty way
   
-  The observer setup can also happen in the @after_add@ hook, not to confuse with _After Eight_, a delicious mint and chocolate desert, also suitable as snack for guests.
+  The observer setup can also happen in the @after_add@ hook, not to be confused with _After Eight_, a delicious mint and chocolate desert, also suitable as snacks for guests.
   
 = code "app/cells/twitter_widget.rb", :tag => "v4", :lines => 1..6
 
 :textile
-  This hook is run after the widget is added to its parent. Usually this mean when you call @me.root@ you get the root widget. It's a convenient way to cleanly encapsulate both logic and observers *inside your widget*.
+  This hook is run after the widget is added to its parent. Usually this means when you call @me.root@ you get the root widget. It's a convenient way to cleanly encapsulate both logic and observers *inside your widget*.
