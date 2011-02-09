@@ -28,31 +28,29 @@
   
   Reading the "portlets example":http://jqueryui.com/demos/sortable/portlets.html source it turns out that we have to alter the dashboard view a bit.
 
-= code "app/views/dashboard/index.html.haml", :tag => "v5", :language => :haml
+= code "app/views/dashboard/index.html.haml", :tag => "portlets-1", :language => :haml
   
 :textile
-  That's three columns (line 4-8) and a bit JavaScript I copied from the example.
+  That's two columns (line 4-7) and a bit JavaScript I copied from the example.
   
   
   h2. Widgets get Portlets
   
   Portlets have some styling requirements and expect some divs and classes. Why not use a layout?
 
-=# code "app/cells/twitter_widget.rb", :tag => "v5"
-
-= code "app/cells/twitter_widget.rb", :tag => "v5", :lines => 8..11
+= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 4..7
 
 :textile
   The same in the trashbin.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v5", :lines => 4..6
+= code "app/cells/trashbin_widget.rb", :tag => "portlets-1", :lines => 4..6
 
 :textile
   h2. Layouts
   
   Yeah, widgets can have layouts, too. That makes sense as soon as your widgets start sharing certain view blocks.
   
-= code "app/cells/layouts/portlet.haml", :tag => "v5"
+= code "app/cells/layouts/portlet.haml", :tag => "portlets-1"
 
 :textile
   The helper @widget_div@ just creates a div with the specified options (line 1).
@@ -69,9 +67,9 @@
   
   h2. Simplify views
   
-  Now that the layout does all the wrapping work, we should remove calls to @widget_div@ in our views.
+  Now that the layout does all the wrapping work, we should _remove_ calls to @widget_div@ in our views.
   
-= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v5", :lines => 1..4
+= code "app/cells/twitter_widget/show.html.haml", :tag => "portlets-1", :lines => 1..4
   
 :textile 
   h2. Replace gets update
@@ -81,14 +79,14 @@
   
   Now what happens if you post a new tweet?
   
-  The state adds the tweet (line 14) and *replaces the content block itself* with the re-rendered view (line 17).
+  The state adds the tweet (line 10) and *replaces the content block itself* with the re-rendered view (line 13).
   This is not exactly what we want - see on the right.
 
 
-= code "app/cells/twitter_widget.rb", :tag => "v4", :lines => 13..18
+= code "app/cells/twitter_widget.rb", :tag => "dragndrop-2", :lines => 9..14
 
 :textile
-  The generated JavaScript from @replace@ (line 17) would look like this.
+  The generated JavaScript from @replace@ (line 13) would look like this.
 
 :coderay
   #!javascript
@@ -101,17 +99,17 @@
    
   According to the jQuery API on "replaceWith":http://api.jquery.com/replaceWith/, the solution is using "html":http://api.jquery.com/html/ instead. Apotomo provides the @#update@ helper for exactly that. Damn, that's so simple!
 
-= code "app/cells/twitter_widget.rb", :tag => "v5", :lines => 13..18
+= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 9..14
 
 :textile
   Don't forget to use update in all trigger states of portlets.
 
-= code "app/cells/twitter_widget.rb", :tag => "v5", :lines => 20..22
+= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 16..18
 
 :textile
   And in the bin.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v5", :lines => 8..13
+= code "app/cells/trashbin_widget.rb", :tag => "portlets-1", :lines => 8..13
 
 :textile
   Thanks to Jos&eacute; Alberto for "inspiring" me to write this guide. Te quiero, tambi&eacute;n! ;-)
