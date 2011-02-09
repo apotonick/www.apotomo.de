@@ -36,16 +36,7 @@
 :textile
   Now, rewrite your @Gemfile@:
 
-=# code "Gemfile", :tag => "v15"
-:coderay
-  #!ruby
-  source 'http://rubygems.org'
-
-  gem 'rails', '3.0.0'
-  gem 'apotomo', '~>1.0', :require => 'apotomo'
-  gem 'haml'
-  gem 'sqlite3-ruby', :require => 'sqlite3'
-
+= code "Gemfile", :tag => "introduction-1"
 
 :textile
   Install the gems with bundler.
@@ -59,7 +50,7 @@
 :textile
   Next, we could need a layout.
   
-= code("app/views/layouts/application.html.haml", :tag => "v1", :language => :haml)
+= code("app/views/layouts/application.html.haml", :tag => "introduction-1", :language => :haml)
 
 %h2 The Tweet model
 
@@ -91,7 +82,7 @@
   
 :coderay
   #!bash
-  $ rails generate apotomo:widget twitter_widget display_form --haml
+  $ rails generate apotomo:widget twitter_widget display_form -e haml
       exists  app/cells/
       create  app/cells/twitter_widget
       exists  test/widgets
@@ -103,12 +94,12 @@
 :textile
   The widget class should look as follows.
 
-= code("app/cells/twitter_widget.rb", :tag => "v1")
+= code("app/cells/twitter_widget.rb", :tag => "introduction-1")
 
 :textile
   The corresponding view for @display_form@ is rendered in line 6. It contains the same tiresome markup as any other view in Rails.
 
-= code("app/cells/twitter_widget/display_form.html.haml", :tag => "v1", :language => :haml)
+= code("app/cells/twitter_widget/show.html.haml", :tag => "introduction-1", :language => :haml)
 
 
 %h2 Putting the tweeter in the dashboard
@@ -116,12 +107,12 @@
 :textile
   To plug your new widget in a controller, the controller should look like this.
 
-= code("app/controllers/dashboard_controller.rb", :tag => "v1")
+= code("app/controllers/dashboard_controller.rb", :tag => "introduction-1")
 
 :textile
   Change the index view.
   
-= code("app/views/dashboard/index.haml", :tag => "v1")
+= code("app/views/dashboard/index.haml", :tag => "introduction-1")
 
 
 %h2 Running it
