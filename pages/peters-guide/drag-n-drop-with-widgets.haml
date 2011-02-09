@@ -20,13 +20,13 @@
   
   Drag&amp;Drop with JavaScript is well done in ["jQuery UI":http://jqueryui.com/demos/draggable/]. We need to include the new JS lib in our project.
   
-= code "app/views/layouts/application.html.haml", :tag => "v2"
+= code "app/views/layouts/application.html.haml", :tag => "dragndrop-2"
 =# diff "app/views/layouts/application.html.haml", :tag_a => "v1", :tag_b => "v2"
 
 :textile
   Next, the listed items have to be draggable.
   
-= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v2", :language => :haml
+= code "app/cells/twitter_widget/show.html.haml", :tag => "dragndrop-2", :language => :haml
 
 :textile
   This happens in line 23 using the ["Draggable API":http://jqueryui.com/demos/draggable/].
@@ -38,7 +38,7 @@
 
 :coderay
   #!bash
-  $ rails generate widget trashbin_widget display --haml
+  $ rails generate widget trashbin_widget display -e haml
       exists  app/cells/
       create  app/cells/trashbin_widget
       exists  test/widgets
@@ -49,28 +49,28 @@
 :textile
   The @TrashbinWidget@ is bloody simple.
   
-= code "app/cells/trashbin_widget.rb", :tag => "v2"
+= code "app/cells/trashbin_widget.rb", :tag => "dragndrop-2"
 
 :textile
   Our standard view draws the bin image (that I've stolen from somewhere).
 
-= code "app/cells/trashbin_widget/display.html.haml", :tag => "v2", :language => :haml
+= code "app/cells/trashbin_widget/display.html.haml", :tag => "dragndrop-2", :language => :haml
 
 :textile
   In line 5 we define the image from line 3 as ["Droppable":http://jqueryui.com/demos/droppable/].
   
-  On drop, we send an AJAX request to the widget's @:drop@ event url appending the dropped item's id.
+  On drop, we send an AJAX request to the widget's @:trash@ event url appending the dropped item's id.
   
   h2. Catching the dropped
   
-  Remember that the trashbin widget handles @drop@ events.
+  Remember that the trashbin widget handles @trash@ events.
   
-= code "app/cells/trashbin_widget.rb", :tag => "v2", :lines => (1..2)
+= code "app/cells/trashbin_widget.rb", :tag => "dragndrop-2", :lines => (1..2)
 
 :textile
-  Simply put, when the bin sees a @drop@ event, it will invoke its @trash@ state.
+  Simply put, when the bin sees a @trash@ event, it will invoke its @trash@ state. Notice how I can omit the @:with => ...@ portion if the names of event and triggered method are equal.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v2", :lines => (8..13)
+= code "app/cells/trashbin_widget.rb", :tag => "dragndrop-2", :lines => (8..13)
 
 :textile
   In line 12 we *replace the current widget on the page* with the @display@ view.
@@ -86,14 +86,14 @@
   
   According to Apotomo's bubbling event concept, the @tweetDeleted@ event will bubble up to @root@. Why not instruct the list widget to catch it and update itself?
   
-= code "app/cells/twitter_widget.rb", :tag => "v3"
+= code "app/cells/twitter_widget.rb", :tag => "dragndrop-2"
 
 :textile
   We just add the @redraw@ state (line 16) which invokes @display_form@ and replaces the widget content in the browser (line 17).
   
   Since events bubble up, we need to attach an event handler to root. That can be done in the controller.
   
-= code "app/controllers/dashboard_controller.rb", :tag => "v3"
+= code "app/controllers/dashboard_controller.rb", :tag => "dragndrop-2"
 
 :textile
   Line 7 instructs @root@ to call updating on the list widget @'parrot'@ when encountering the respective event.
