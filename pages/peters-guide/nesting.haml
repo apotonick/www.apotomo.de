@@ -44,7 +44,7 @@
 
 :coderay
   #!bash
-  rails generate apotomo:widget tweet_widget display --haml
+  rails generate apotomo:widget tweet_widget display -e haml
       exists  app/cells/
       create  app/cells/tweet_widget
       exists  test/widgets
@@ -56,35 +56,35 @@
 :textile
   The new class is pretty straight-forward.
   
-= code "app/cells/tweet_widget.rb", :tag => "v8"
+= code "app/cells/tweet_widget.rb", :tag => "nesting-2"
 
 :textile
   Somebody has to pass in the @Tweet@ instance we have to display - that's usually the container's job.
   
   Containing some JavaScript capable of improvement, the view is still simple. I never said I'm good at JavaScript.
   
-= code "app/cells/tweet_widget/display.html.haml", :tag => "v8", :language => :haml
+= code "app/cells/tweet_widget/display.html.haml", :tag => "nesting-2", :language => :haml
 
 :textile
-  Basically, if the heart is clicked, an AJAX request is issued (line 10-11) to the url provided by @#url_for_event@ (line 1). Also, we append the id of the loved Tweet object. I never said I'm good at JavaScript.
+  Basically, if the heart is clicked, an AJAX request is issued (line 10-12) to the url provided by @#url_for_event@ (line 1). Also, we append the id of the loved Tweet object. I never said I'm good at JavaScript.
   
   h2. Embedding widgets into containers
   
   A _container_ widget is no special thing, it's just adding children to itself and rendering 'em. The old @TwitterWidget@ will be the container.
   
-= code "app/cells/twitter_widget.rb", :tag => "v9", :lines => 8..14
+= code "app/cells/twitter_widget.rb", :tag => "nesting-2", :lines => 4..10
 
 :textile
-  So far, only @#display_form@ changed. For each tweet it appends a new @TweetWidget@ instance passing in the @:tweet@ as parameter (line 10).
+  So far, only @#show@ changed. For each tweet it appends a new @TweetWidget@ instance passing in the @:tweet@ as parameter (line 6).
   
-  It is important to understand that you can use the composing methods like @<<@ or @remove!@ not in controllers @has_widget@ blocks only, but in widgets, too.
+  It is important to understand that you can use the composing methods like @#<<@ or @#remove!@ not in controllers @has_widget@ blocks only, but in widgets, too.
   
   
   h2. Rendering children
   
   When calling @render@ without the @:render_children => false@ "option":http://rdoc.info/github/apotonick/apotomo/master/Apotomo/Widget:render, children will be rendered automatically.
   
-= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v15", :language => :haml, :lines => 1..5
+= code "app/cells/twitter_widget/show.html.haml", :tag => "nesting-2", :language => :haml, :lines => 1..5
 
 :textile
   Nothing really changed here as well - except that we simply access the @rendered_children@ hash which contains the rendered child views already (line 2). Pretty handy.
@@ -104,7 +104,7 @@
   
   The @has_widgets@ block in widgets is our substitution for the lack of statefulness here (hey, you chose to derive from @Widget@ instead of @StatefulWidget@!) - it is run every time the widget is instantiated.
   
-= code "app/cells/twitter_widget.rb", :tag => "v10", :lines => 1..16
+= code "app/cells/twitter_widget.rb", :tag => "nesting-has-widgets-2", :lines => 1..16
 
 :textile
   Instead of adding the kids in an explicit state (that was in @#display_form@ before) we put the setup on the class layer (line 8-12).
@@ -115,13 +115,13 @@
   
   The click should be processed in the @TweetWidget@ which fired it as well.
   
-= code "app/cells/tweet_widget.rb", :tag => "v10"
+= code "app/cells/tweet_widget.rb", :tag => "nesting-has-widgets-2"
 
 
 
 :textile
   #{img "hearting-apotomo.png", :class => :right}
   
-  We already know that shit. First create an observer (line 1). In @#toggle@ we, well, toggle the _loved_ state of the desired tweet and replace the content with a re-rendered @display@ view (line 9-14).
+  We already know that shit. First create an observer (line 2). In @#toggle@ we, well, toggle the _loved_ state of the desired tweet and replace the content with a re-rendered @display@ view (line 9-14).
   
   And voil&agrave; - clicking the heart icon updates the tweet. 
