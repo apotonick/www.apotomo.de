@@ -10,15 +10,19 @@
   
   The widgets need customized titles, though. Being all about encapsulation, Apotomo naturally provides a way to pass options into widgets from outside.
   
-= code "app/controllers/dashboard_controller.rb", :tag => "v6", :lines => 4..7
+= code "app/controllers/dashboard_controller.rb", :tag => "setupcode-1", :lines => 4..7
 
 :textile
   We can provide arbitrary options in the @widget@ method (line 6).
+  
+  h2. Looking up options
+  
+  Passing configuration options into the widget is a very common task. It's so common that it is built into the widgets itself.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v6"
+= code "app/cells/trashbin_widget.rb", :tag => "setupcode-2"
 
-:markdown
-  The widget can subsequently access the `@opts` hash and process its parameters (line 21). It also uses `params` to access request parameters (line 13). You may use these variables, however, there is a safer approach in Apotomo that we'll discuss shortly.
+:textile
+  Widgets can easily access their configuration data using @#options@ (line 21). In states triggered by an event they can use the event object to access request parameters (line 13).
 
 :textile
   Note that we have to call @setup!@ in the start state as well as in the trigger states, as our widget is stateless.
@@ -27,11 +31,8 @@
   
   Fortunately, Apotomo already has a hook for exactly that job.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v14"
+= code "app/cells/trashbin_widget.rb", :tag => "hooks-1"
 
 :textile
   The @after_initialize@ hook (line 4) will execute all attached callbacks after the widget was created. It is somehow comparable to a @before_filter@ in Rails controllers.
   
-  h2. A cleaner parameter lookup
-  
-  It is usually safer to use @param@ for parameter access. This method provides both request parameters and variables from @widget@ (line 11 and 19), where the latter overwrites parameters from the request in a name clash.
