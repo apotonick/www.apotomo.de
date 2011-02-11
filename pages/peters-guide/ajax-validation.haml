@@ -18,21 +18,21 @@
 
   First, we setup some constraints.
   
-= code "app/models/tweet.rb", :tag => "v11", :lines => 1..2
+= code "app/models/tweet.rb", :tag => "model-validation-1", :lines => 1..2
 
 :textile
   h2. Form tweaking
   
   In the next step we use the rails form helpers for setting up a the input field quickly.
   
-= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 18..23
+= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 26..33
 
 :textile
-  The processing state *triggered by the form submission* simply uses Rails' popular model methods to validate and save the fresh tweet item (line 18-19).
+  The processing state *triggered by the form submission* simply uses Rails' popular model methods to validate and save the fresh tweet item (line 27-28).
   
-  Updating the widget works by sending back a re-rendered @display_form@ view. Since we changed the widget code, we also have to change things in the form view (line 22).
+  Updating the widget works by sending back a re-rendered @show@ view. Since we changed the widget code, we also have to change things in the form view (line 32).
   
-= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v11", :lines => 4..11
+= code "app/cells/twitter_widget/show.html.haml", :tag => "model-validation-1", :lines => 4..11
 
 :textile
   The @form_for@ does all the work for us (line 7). When clicking the "Tweet!" button, the form is sent to the unobstrusive url and triggering a @:submit@ events.
@@ -41,7 +41,7 @@
   
   Remember, the widget handling the form is listening to that event.
   
-= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 1..2
+= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 1..2
 
 :textile
   Submitting an empty tweet yields an error message in our form. Awesome.
@@ -62,12 +62,12 @@
   
   Currently, we set up the tweets list in a @has_widgets@ block.
 
-= code "app/cells/twitter_widget.rb", :tag => "v11", :lines => 8..12
+= code "app/cells/twitter_widget.rb", :tag => "nesting-has-widgets-2", :lines => 8..12
 
 :textile
   The problem here is, that @has_widget@ is executed *once at initialization* in every request. In our case, however, we have a dynamic list where we need to add and remove childs in state methods. We should refactor our widget a bit.
   
-= code "app/cells/twitter_widget.rb", :tag => "v13", :lines => 8..20
+= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 8..20
 
 :textile
   In @synchronize_with_model!@ we first remove all children (line 13), then add items only if they are new (line 16-18).
@@ -79,7 +79,7 @@
   
   When dumping an item on the trashbin, it doesn't vanish from the list. Yeah, we have to remove the *widget representation*, too.
   
-= code "app/cells/twitter_widget.rb", :tag => "v13", :lines => 35..39
+= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 35..38
 
 :textile
   A call to our synchronization method fixes things (line 36).
