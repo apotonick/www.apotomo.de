@@ -13,6 +13,6 @@ module BoxHelper
     options[:version_links] = options[:version_links].join(", ")
     
   
-    partial 'meta_box', :locals => options
+    partial 'shared/meta_box', :locals => options
   end
 end
