@@ -1,0 +1,127 @@
+:ruby
+  # :alias => :nesting_10, :title => "Composed widgets"
+
+%h1
+  Composed widgets
+  = page_link "2.3", 'nesting-2.3', :class => :version
+  = page_link "3.0", 'nesting', :class => :version
+  
+:textile
+  #{img "heart.png", :class => :right}
+  
+  Being real web components, Apotomo widgets can be nested. This allows building more *complex widget trees* where widgets are put into containers.
+  
+  We need a new feature: Tweets should be markable as "loved" if we like them. 
+
+
+
+:textile
+  Clicking on the heart icon flags the respective @Tweet@ row as _loved_ and redraws the list item.  Let's make the @TwitterWidget@ a container where each loveable tweet item is a separate child widget.
+  
+  
+  h2. Making tweets loveable
+  
+  First add the new field to the tweets table.
+  
+:coderay
+  #!bash
+  rails generate migration add_loved_flag_to_tweet loved:boolean
+
+:textile
+  And execute the migration
+
+:coderay
+  #!bash
+  rake db:migrate
+
+:textile
+  Now it's time for another widget, yeah!
+  
+  
+  h2. Creating a new widget
+
+  The generator strikes back - we call it @TweetWidget@ as it displays one item, only.
+
+:coderay
+  #!bash
+  rails generate apotomo:widget tweet_widget display --haml
+      exists  app/cells/
+      create  app/cells/tweet_widget
+      exists  test/widgets
+      create  app/cells/tweet_widget.rb
+      create  app/cells/tweet_widget/display.html.haml
+      create  test/widgets/tweet_widget_test.rb
+  
+
+:textile
+  The new class is pretty straight-forward.
+  
+= code "app/cells/tweet_widget.rb", :tag => "v8"
+
+:textile
+  Somebody has to pass in the @Tweet@ instance we have to display - that's usually the container's job.
+  
+  Containing some JavaScript capable of improvement, the view is still simple. I never said I'm good at JavaScript.
+  
+= code "app/cells/tweet_widget/display.html.haml", :tag => "v8", :language => :haml
+
+:textile
+  Basically, if the heart is clicked, an AJAX request is issued (line 10-11) to the url provided by @#url_for_event@ (line 1). Also, we append the id of the loved Tweet object. I never said I'm good at JavaScript.
+  
+  h2. Embedding widgets into containers
+  
+  A _container_ widget is no special thing, it's just adding children to itself and rendering 'em. The old @TwitterWidget@ will be the container.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v9", :lines => 8..14
+
+:textile
+  So far, only @#display_form@ changed. For each tweet it appends a new @TweetWidget@ instance passing in the @:tweet@ as parameter (line 10).
+  
+  It is important to understand that you can use the composing methods like @<<@ or @remove!@ not in controllers @has_widget@ blocks only, but in widgets, too.
+  
+  
+  h2. Rendering children
+  
+  When calling @render@ without the @:render_children => false@ "option":http://rdoc.info/github/apotonick/apotomo/master/Apotomo/Widget:render, children will be rendered automatically.
+  
+= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v15", :language => :haml, :lines => 1..5
+
+:textile
+  Nothing really changed here as well - except that we simply access the @rendered_children@ hash which contains the rendered child views already (line 2). Pretty handy.
+  
+= img "with-hearts.png"
+
+:textile
+  This looks good. If we click a heart icon... an AJAX request is triggered but brings us back an exception.
+  
+  @Source "tweet-26" non-existent.@
+  
+  Well, we are in a stateless setup, so naturally in the triggered state the container widget forgets all the children we added earlier. The problem: when we trigger an event from a tweet widget (by clicking the heart), Apotomo tries to find this widget instance to start bubbling the event. But it's already gone as it didn't survive the request.
+  
+  Lucky us we already #{page_link "read about that", :stateless}.
+  
+  h2. Statefulness in a stateless world
+  
+  The @has_widgets@ block in widgets is our substitution for the lack of statefulness here (hey, you chose to derive from @Widget@ instead of @StatefulWidget@!) - it is run every time the widget is instantiated.
+  
+= code "app/cells/twitter_widget.rb", :tag => "v10", :lines => 1..16
+
+:textile
+  Instead of adding the kids in an explicit state (that was in @#display_form@ before) we put the setup on the class layer (line 8-12).
+  
+  Clicking the heart now works... nothing happens, though, cause we didn't setup an event handler.
+  
+  h2. Catching the heart beat
+  
+  The click should be processed in the @TweetWidget@ which fired it as well.
+  
+= code "app/cells/tweet_widget.rb", :tag => "v10"
+
+
+
+:textile
+  #{img "hearting-apotomo.png", :class => :right}
+  
+  We already know that shit. First create an observer (line 1). In @#toggle@ we, well, toggle the _loved_ state of the desired tweet and replace the content with a re-rendered @display@ view (line 9-14).
+  
+  And voil&agrave; - clicking the heart icon updates the tweet. 

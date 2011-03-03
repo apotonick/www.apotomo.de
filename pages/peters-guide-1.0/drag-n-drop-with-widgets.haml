@@ -1,0 +1,108 @@
+:ruby
+  # :alias => "dragndrop_10"
+
+- @page_title = "Drag&Drop with widgets" 
+
+%h1
+  Drag&Drop with widgets
+  = page_link "2.3", 'dragndrop-2.3', :class => :version
+  = page_link "3.0", 'dragndrop', :class => :version
+
+:textile
+  In the #{page_link "previous lesson", "introduction"} we did a simple tweeter. Now what if we'd like to dump an item? Besides that twitter doesn't allow deleting (do they?), let's start writing a trashbin widget.
+
+= img "dragndrop.png"
+
+:textile
+  When dropping an item the bin widget deletes it from the database. To stay in sync with our model, the list should also redraw. You'll learn how to do that using *event triggering* in this lesson.
+
+  h2. Dragging items
+  
+  Drag&Drop with JavaScript is well done in ["jQuery UI":http://jqueryui.com/demos/draggable/]. We need to include the new JS lib in our project.
+  
+= code "app/views/layouts/application.html.haml", :tag => "v2"
+=# diff "app/views/layouts/application.html.haml", :tag_a => "v1", :tag_b => "v2"
+
+:textile
+  Next, the listed items have to be draggable.
+  
+= code "app/cells/twitter_widget/display_form.html.haml", :tag => "v2", :language => :haml
+
+:textile
+  This happens in line 23 using the ["Draggable API":http://jqueryui.com/demos/draggable/].
+  
+  
+  h2. Creating the trashbin widget
+  
+  The bin widget is just a generator away.
+
+:coderay
+  #!bash
+  $ rails generate widget trashbin_widget display --haml
+      exists  app/cells/
+      create  app/cells/trashbin_widget
+      exists  test/widgets
+      create  app/cells/trashbin_widget.rb
+      create  app/cells/trashbin_widget/display.html.haml
+      create  test/widgets/trashbin_widget_test.rb
+
+:textile
+  The @TrashbinWidget@ is bloody simple.
+  
+= code "app/cells/trashbin_widget.rb", :tag => "v2"
+
+:textile
+  Our standard view draws the bin image that I'd stole somewhere.
+
+= code "app/cells/trashbin_widget/display.html.haml", :tag => "v2", :language => :haml
+
+:textile
+  In line 5 we define the image from line 3 as ["Droppable":http://jqueryui.com/demos/droppable/].
+  
+  On drop, we send an AJAX request to the widget's @:drop@ event url appending the dropped item's id.
+  
+  h2. Catching the dropped
+  
+  Remember that the trashbin widget handles @drop@ events.
+  
+= code "app/cells/trashbin_widget.rb", :tag => "v2", :lines => (1..2)
+
+:textile
+  Simply put, when the bin sees a @drop@ event, it will invoke its @trash@ state.
+
+= code "app/cells/trashbin_widget.rb", :tag => "v2", :lines => (8..13)
+
+:textile
+  In line 12 we *replace the current widget on the page* with the @display@ view.
+  
+  
+  h2. Triggering events
+  
+  What's that @trigger@ statement in line 10?
+  
+  Well, we simply inform the outer world that we altered the tweets table - since we ruthlessly deleted an item.
+  
+  h2. Bubbling events 
+  
+  According to Apotomo's bubbling event concept, the @tweetDeleted@ event will bubble up to @root@. Why not instruct the list widget to catch it and update itself?
+  
+= code "app/cells/twitter_widget.rb", :tag => "v3"
+
+:textile
+  We just add the @redraw@ state (line 16) which invokes @display_form@ and replaces the widget content in the browser (line 17).
+  
+  Since events bubble up, we need to attach an event handler to root. That can be done in the controller.
+  
+= code "app/controllers/dashboard_controller.rb", :tag => "v3"
+
+:textile
+  Line 7 instructs @root@ to call updating on the list widget @'parrot'@ when encountering the respective event.
+  
+  However, putting observer instructions in the controller is not very clean and breaks widget encapsing, since the controller knows details about the widgets' internals.
+  
+  There are two ways to make this suck less.
+
+  * Have a container that wraps both widgets.
+  * Use the @after_add@ hook to add an observer.
+  
+  Both approaches use Apotomo's #{page_link "event bubbling", "bubbling"}.

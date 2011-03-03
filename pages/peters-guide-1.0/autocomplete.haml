@@ -1,0 +1,53 @@
+:ruby
+  # :alias => :autocomplete_10, :title => "jQuery with Apotomo"
+
+
+:textile
+  h1. jQuery Basics
+  
+  Apotomo's web components are perfect for wrapping JavaScript controls. They simplify configuration and rendering, and - this is where it gets really handy - with little effort *events from JavaScript can travel to your ruby widgets* and trigger responses there.
+  
+  #{img "autocomplete.png", :class => :right}
+  
+  Since we already loaded jQuery UI, let's use it to implement an "autocomplete control":http://jqueryui.com/demos/autocomplete/ which helps us searching for tweets.
+  
+  
+  h2. Wrapping the Autocomplete control
+  
+  The search box widget is called @QuickSearch@, a stupid name, whatever, I'm hungover.
+  
+:coderay
+  #!bash
+  rails g apotomo:widget quick_search display --haml
+  
+:textile
+  We are feeling comfortable with plugging widgets into views now.
+
+= code("app/controllers/dashboard_controller.rb", :tag => "v18", :lines => 4..8)
+  
+:textile
+  Just plug the new widget into the dashboard.
+
+= code("app/views/dashboard/index.html.haml", :tag => "v18", :lines => 8..9)
+
+:textile
+  The view for our input box is mostly copied from the jQuery UI example.
+
+= code("app/cells/quick_search/display.html.haml", :tag => "v18")
+
+:textile
+  jQuery's @autocomplete@ method simply gets its URL from the unobstrusive @data-load-event-url@ attribute (line 5). Now, when typing into the field, a @:typing@ event is triggered via AJAX - *which can be used for sending back matching items*.
+    
+    
+  Let's process the event.
+
+= code("app/cells/quick_search.rb", :tag => "v20")
+
+:textile
+  We catch the event by calling our old friend @responds_to_event@ (line 2). When that kind of event is encountered, the @#search@ method gets invoked.
+  
+  As jQuery per default sets the @term@ query parameter we retrieve that value using Apotomo's @#param@ and then *do the actual select* (line 9).
+  
+  In a more or less efficient way we create a JSON item list and *send it back* using @render :text@ (line 14).
+  
+  Isn't that stupid simple? You don't need to setup any AJAX route, you don't need to fuck around with partials and helpers and - that's the coolest - you might use that widget in another app, too!
