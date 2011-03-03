@@ -1,7 +1,9 @@
 :ruby
   # :alias => :options
 
-%h1 Options processing
+%h1
+  Options processing
+  = page_link "apotomo-1.0", 'options_10', :class => :version
 
 :textile
   #{img "portlet-title.png", :class => :right}
@@ -10,16 +12,16 @@
   
   The widgets need customized titles, though. Being all about encapsulation, Apotomo naturally provides a way to pass options into widgets from outside.
   
-= code "app/controllers/dashboard_controller.rb", :tag => "setupcode-1", :lines => 4..7
+= code "app/controllers/dashboard_controller.rb", :tag => "setupcode-3", :lines => 3..6
 
 :textile
-  We can provide arbitrary options in the @widget@ method (line 6).
+  We can provide arbitrary options in the @widget@ method (line 5).
   
   h2. Looking up options
   
   Passing a configuration hash into the widget is a very common task. It's so common that it is built into the widgets itself.
 
-= code "app/cells/trashbin_widget.rb", :tag => "setupcode-2"
+= code "app/widgets/trashbin_widget.rb", :tag => "setupcode-3"
 
 :textile
   Widgets can easily access their configuration data using @#options@ (line 21). In states triggered by an event they can use the event object to access request parameters (line 13).
@@ -31,7 +33,7 @@
   
   Fortunately, Apotomo already has a hook for exactly that job.
 
-= code "app/cells/trashbin_widget.rb", :tag => "hooks-1"
+= code "app/widgets/trashbin_widget.rb", :tag => "hooks-3"
 
 :textile
   The @after_initialize@ hook (line 4) will execute all attached callbacks after the widget was created. It is somehow comparable to a @before_filter@ in Rails controllers.

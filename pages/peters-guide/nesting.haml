@@ -5,6 +5,7 @@
   Composed widgets
   = page_link "2.3", 'nesting-2.3', :class => :version
   = page_link "3.0", 'nesting', :class => :version
+  = page_link "apotomo-1.0", 'nesting_10', :class => :version
   
 :textile
   #{img "heart.png", :class => :right}
@@ -44,26 +45,26 @@
 
 :coderay
   #!bash
-  rails generate apotomo:widget tweet_widget display -e haml
-      exists  app/cells/
-      create  app/cells/tweet_widget
+  rails generate apotomo:widget tweet display -e haml
+      exists  app/widgets/
+      create  app/widgets/tweet_widget
       exists  test/widgets
-      create  app/cells/tweet_widget.rb
-      create  app/cells/tweet_widget/display.html.haml
+      create  app/widgets/tweet_widget.rb
+      create  app/widgets/tweet/display.html.haml
       create  test/widgets/tweet_widget_test.rb
   
 
 :textile
   The new class is pretty straight-forward.
   
-= code "app/cells/tweet_widget.rb", :tag => "nesting-2"
+= code "app/widgets/tweet_widget.rb", :tag => "nesting-3"
 
 :textile
   Somebody has to pass in the @Tweet@ instance we have to display - that's usually the container's job.
   
   Containing some JavaScript capable of improvement, the view is still simple. I never said I'm good at JavaScript.
   
-= code "app/cells/tweet_widget/display.html.haml", :tag => "nesting-2", :language => :haml
+= code "app/widgets/tweet/display.html.haml", :tag => "nesting-3", :language => :haml
 
 :textile
   Basically, if the heart is clicked, an AJAX request is issued (line 10-12) to the url provided by @#url_for_event@ (line 1). Also, we append the id of the loved Tweet object. I never said I'm good at JavaScript.
@@ -72,22 +73,22 @@
   
   A _container_ widget is no special thing, it's just adding children to itself and rendering 'em. The old @TwitterWidget@ will be the container.
   
-= code "app/cells/twitter_widget.rb", :tag => "nesting-2", :lines => 4..10
+= code "app/widgets/twitter_widget.rb", :tag => "nesting-3", :lines => 9..15
 
 :textile
-  So far, only @#show@ changed. For each tweet it appends a new @TweetWidget@ instance passing in the @:tweet@ as parameter (line 6).
+  So far, only @#display@ changed. For each tweet it appends a new @TweetWidget@ instance passing in the @:tweet@ as parameter (line 11).
   
   It is important to understand that you can use the composing methods like @#<<@ or @#remove!@ not in controllers @has_widget@ blocks only, but in widgets, too.
   
   
   h2. Rendering children
   
-  When calling @render@ without the @:render_children => false@ "option":http://rdoc.info/github/apotonick/apotomo/master/Apotomo/Widget:render, children will be rendered automatically.
+  To render widgets within state views you may use @#render_widget@.
   
-= code "app/cells/twitter_widget/show.html.haml", :tag => "nesting-2", :language => :haml, :lines => 1..5
+= code "app/widgets/twitter/display.html.haml", :tag => "nesting-3", :language => :haml, :lines => 1..5
 
 :textile
-  Nothing really changed here as well - except that we simply access the @rendered_children@ hash which contains the rendered child views already (line 2). Pretty handy.
+  Nothing really changed here as well - except that we simply call @children@ (line 2). Pretty handy.
   
 = img "with-hearts.png"
 
@@ -104,10 +105,10 @@
   
   The @has_widgets@ block in widgets is our substitution for the lack of statefulness here (hey, you chose to derive from @Widget@ instead of @StatefulWidget@!) - it is run every time the widget is instantiated.
   
-= code "app/cells/twitter_widget.rb", :tag => "nesting-has-widgets-2", :lines => 1..16
+= code "app/widgets/twitter_widget.rb", :tag => "nesting-has-widgets-3", :lines => 1..16
 
 :textile
-  Instead of adding the kids in an explicit state (that was in @#display_form@ before) we put the setup on the class layer (line 8-12).
+  Instead of adding the kids in an explicit state (that was in @#display@ before) we put the setup on the class layer (line 8-12).
   
   Clicking the heart now works... nothing happens, though, cause we didn't setup an event handler.
   
@@ -115,7 +116,7 @@
   
   The click should be processed in the @TweetWidget@ which fired it as well.
   
-= code "app/cells/tweet_widget.rb", :tag => "nesting-has-widgets-2"
+= code "app/widgets/tweet_widget.rb", :tag => "nesting-has-widgets-3"
 
 
 

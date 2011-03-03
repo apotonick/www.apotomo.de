@@ -1,7 +1,9 @@
 :ruby
   # :alias => :portlets
 
-%h1 Working with Portlets
+%h1
+  Working with Portlets
+  = page_link "apotomo-1.0", 'portlets_10', :class => :version
 
 
 :textile
@@ -18,7 +20,7 @@
   
   Things are pretty with jQuery. Let's use the theme "eggplant":http://jqueryui.com/themeroller/#ffDefault=Lucida+Grande%2C+Lucida+Sans%2C+Arial%2C+sans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=30273a&bgTextureHeader=03_highlight_soft.png&bgImgOpacityHeader=25&borderColorHeader=231d2b&fcHeader=ffffff&iconColorHeader=a8a3ae&bgColorContent=3d3644&bgTextureContent=12_gloss_wave.png&bgImgOpacityContent=30&borderColorContent=7e7783&fcContent=ffffff&iconColorContent=ffffff&bgColorDefault=dcd9de&bgTextureDefault=03_highlight_soft.png&bgImgOpacityDefault=100&borderColorDefault=dcd9de&fcDefault=665874&iconColorDefault=8d78a5&bgColorHover=eae6ea&bgTextureHover=03_highlight_soft.png&bgImgOpacityHover=100&borderColorHover=d1c5d8&fcHover=734d99&iconColorHover=734d99&bgColorActive=5f5964&bgTextureActive=03_highlight_soft.png&bgImgOpacityActive=45&borderColorActive=7e7783&fcActive=ffffff&iconColorActive=454545&bgColorHighlight=fafafa&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=ffdb1f&fcHighlight=333333&iconColorHighlight=8d78a5&bgColorError=994d53&bgTextureError=01_flat.png&bgImgOpacityError=55&borderColorError=994d53&fcError=ffffff&iconColorError=ebccce&bgColorOverlay=eeeeee&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=80&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=60&thicknessShadow=4px&offsetTopShadow=-4px&offsetLeftShadow=-4px&cornerRadiusShadow=0px. I like eggplants. Just use good olive oil when frying 'em, and do not forget the salt and pepper.
    
-= code "app/views/layouts/application.html.haml", :tag => "v5", :language => :haml
+= code "app/views/layouts/application.html.haml", :tag => "portlets-2", :language => :haml
 
 :textile
   We just add the _eggplant_ theme stylesheet (line 7).
@@ -38,19 +40,19 @@
   
   Portlets have some styling requirements and expect some divs and classes. Why not use a layout?
 
-= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 4..7
+= code "app/widgets/twitter_widget.rb", :tag => "portlets-2", :lines => 8..11
 
 :textile
   The same in the trashbin.
 
-= code "app/cells/trashbin_widget.rb", :tag => "portlets-1", :lines => 4..6
+= code "app/widgets/trashbin_widget.rb", :tag => "portlets-2", :lines => 4..6
 
 :textile
   h2. Layouts
   
   Yeah, widgets can have layouts, too. That makes sense as soon as your widgets start sharing certain view blocks.
   
-= code "app/cells/layouts/portlet.haml", :tag => "portlets-1"
+= code "app/widgets/layouts/portlet.haml", :tag => "portlets-2"
 
 :textile
   The helper @widget_div@ just creates a div with the specified options (line 1).
@@ -69,7 +71,7 @@
   
   Now that the layout does all the wrapping work, we should _remove_ calls to @widget_div@ in our views.
   
-= code "app/cells/twitter_widget/show.html.haml", :tag => "portlets-1", :lines => 1..4
+= code "app/widgets/twitter/display.html.haml", :tag => "portlets-2", :lines => 1..4
   
 :textile 
   h2. Replace gets update
@@ -83,14 +85,14 @@
   This is not exactly what we want - see on the right.
 
 
-= code "app/cells/twitter_widget.rb", :tag => "dragndrop-2", :lines => 9..14
+= code "app/widgets/twitter_widget.rb", :tag => "dragndrop-4", :lines => 9..14
 
 :textile
   The generated JavaScript from @replace@ (line 13) would look like this.
 
 :coderay
   #!javascript
-  $("#parrot").replaceWith("<ul>...");
+  $("#twitter").replaceWith("<ul>...");
 
 :textile
   h2. Solution: the @update@ helper
@@ -99,17 +101,17 @@
    
   According to the jQuery API on "replaceWith":http://api.jquery.com/replaceWith/, the solution is using "html":http://api.jquery.com/html/ instead. Apotomo provides the @#update@ helper for exactly that. Damn, that's so simple!
 
-= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 9..14
+= code "app/widgets/twitter_widget.rb", :tag => "portlets-2", :lines => 9..14
 
 :textile
   Don't forget to use update in all trigger states of portlets.
 
-= code "app/cells/twitter_widget.rb", :tag => "portlets-1", :lines => 16..18
+= code "app/widgets/twitter_widget.rb", :tag => "portlets-2", :lines => 16..18
 
 :textile
   And in the bin.
 
-= code "app/cells/trashbin_widget.rb", :tag => "portlets-1", :lines => 8..13
+= code "app/widgets/trashbin_widget.rb", :tag => "portlets-2", :lines => 8..13
 
 :textile
   Thanks to Jos&eacute; Alberto for "inspiring" me to write this guide. Te quiero, tambi&eacute;n! ;-)

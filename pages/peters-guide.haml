@@ -1,13 +1,13 @@
 :ruby
-  # :alias => 'introduction'
+  # :alias => 'introduction-1.1'
 
 - @page_title = "Introduction to Widgets"
 
 %h1 
   Peter's Guide
-  = page_link "2.3", 'introduction-2.3', :class => :version
-  = page_link "3.0", 'introduction', :class => :version
-  
+
+= meta_box :topics => "basic widget, generator, #render_widget", :branch => "introduction", :versions => ["0.1", "1.0", "1.1"]
+
 :textile
   This is a brief tutorial for setting up a small *Rails 3* app with Apotomo widgets. It's meant as a starting point for learning Apotomo, so grab a beer and read on!
 
@@ -36,7 +36,7 @@
 :textile
   Now, rewrite your @Gemfile@:
 
-= code "Gemfile", :tag => "introduction-1"
+= code "Gemfile", :tag => "introduction-5"
 
 :textile
   Install the gems with bundler.
@@ -82,37 +82,37 @@
   
 :coderay
   #!bash
-  $ rails generate apotomo:widget twitter_widget display_form -e haml
-      exists  app/cells/
-      create  app/cells/twitter_widget
+  $ rails generate apotomo:widget twitter display -e haml
+      exists  app/widgets/
+      create  app/widgets/twitter
       exists  test/widgets
-      create  app/cells/twitter_widget.rb
-      create  app/cells/twitter_widget/display_form.html.haml
+      create  app/widgets/twitter_widget.rb
+      create  app/widgets/twitter/display.html.haml
       create  test/widgets/twitter_widget_test.rb
 
       
 :textile
   The widget class should look as follows.
 
-= code("app/cells/twitter_widget.rb", :tag => "introduction-1")
+= code("app/widgets/twitter_widget.rb", :tag => "introduction-3")
 
 :textile
-  The corresponding view for @display_form@ is rendered in line 6. It contains the same tiresome markup as any other view in Rails.
+  The corresponding view for @display@ is rendered in line 6. It contains the same tiresome markup as any other view in Rails.
 
-= code("app/cells/twitter_widget/show.html.haml", :tag => "introduction-1", :language => :haml)
+= code("app/widgets/twitter/display.html.haml", :tag => "introduction-3", :language => :haml)
 
 
 %h2 Putting the tweeter in the dashboard
 
 :textile
-  To plug your new widget in a controller, the controller should look like this.
+  To plug your new widget in a controller you can use a handy @has_widgets@ block.
 
-= code("app/controllers/dashboard_controller.rb", :tag => "introduction-1")
+= code("app/controllers/dashboard_controller.rb", :tag => "introduction-3")
 
 :textile
   Change the index view.
   
-= code("app/views/dashboard/index.haml", :tag => "introduction-1")
+= code("app/views/dashboard/index.html.haml", :tag => "introduction-3")
 
 
 %h2 Running it

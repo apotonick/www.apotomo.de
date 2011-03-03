@@ -13,6 +13,13 @@ atom:
   
   entries:
     -
+      id: 1.1-online
+      title: Updated the guides to 1.1
+      updated: 2011-03-02T13:30:02+02:00
+      link: http://apotomo.de/peters-guide.html
+      summary: I updated most of the guides to using Apotomo 1.1. You can still reach the 1.0 guides by clicking the apotomo-1.0 icon on the right. Please be patient with the remaining guides as we're currently re-working and restructuring the tutorials.
+      
+    -
       id: http://apotomo.de/on-the-road.html
       title: The LoneStar 2010 video is online!
       updated: 2010-12-27T13:30:02+02:00

@@ -1,24 +1,26 @@
 :ruby
   # :alias => :bubbling
 
-:textile
-  h1. Bubbling events
+%h1
+  Bubbling events
+  = page_link "apotomo-1.0", 'bubbling_10', :class => :version
   
+:textile
   Ok, our very simple widget tree currently consists of three widgets
   
-= code "app/controllers/dashboard_controller.rb", :tag => "v3", :lines => (4..8)
+= code "app/controllers/dashboard_controller.rb", :tag => "dragndrop-4", :lines => (3..7)
 
 :textile
   Now, @bin@ alters the tweets table and triggers an event.
 
-= code "app/cells/trashbin_widget.rb", :tag => "v3", :lines => (8..10)
+= code "app/widgets/trashbin_widget.rb", :tag => "bubbling-2", :lines => (8..10)
 
 :textile
   #{img "event-bubbling.png", :class => "right"}
   
   The triggered event starts from @bin@, climbs up and bubbles to @root@. To grab it we have to attach an observer to either @bin@ or @root@.
   
-  How could @parrot@ catch that event itself?
+  How could the twitter widget catch that event itself?
   
   The answer is: *it can't*. We have to put the observer somewhere on the way between the trashbin and root.
 
@@ -35,7 +37,7 @@
   
   The observer setup can also happen in the @after_add@ hook, not to be confused with _After Eight_, a delicious mint and chocolate desert, also suitable as snacks for guests.
   
-= code "app/cells/twitter_widget.rb", :tag => "v4", :lines => 1..6
+= code "app/widgets/twitter_widget.rb", :tag => "bubbling-2", :lines => 1..6
 
 :textile
   This hook is run after the widget is added to its parent. Usually this means when you call @me.root@ you get the root widget. It's a convenient way to cleanly encapsulate both logic and observers *inside your widget*.
