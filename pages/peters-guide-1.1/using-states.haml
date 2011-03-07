@@ -1,0 +1,118 @@
+:ruby
+  # :alias => 'using-states-1.1'
+
+- @page_title = "Using states for encapsulating things"
+
+%h1 
+  Using views and states
+
+= meta_box :topics => "render :view, render :state", :branch => "render-state", :versions => ["1.1"]
+
+:textile
+  In the #{page_link "introducing chapter", "introduction-1.1"} we got our twittering working. However, the @#display@ view does two jobs at once.
+  
+  It's listing the tweets _and_ managing the form for new posts.
+  
+  Why not have a look at it.
+  
+= code("app/widgets/twitter/display.html.haml", :tag => "introduction-head", :language => :haml)
+
+:textile
+  In a component-oriented architecture things should be *separated for good encapsulation* so let's learn two simple steps to do just that.
+  
+  h2. Extracting partials
+  
+  Often it is good practice to move view fragment to _partials_. A partial is reusable and helps limiting the scope of variables used in the view.
+  
+.info
+  :textile
+    In Cells (and Apotomo) we don't distinguish between _view_ and _partial_ - there's no need for making thing more complex. Everything is a view... or a partial. We simply call it *view*.
+
+:textile
+  Let's extract the list to a separate view. Or partial. Whatever.
+
+= code("app/widgets/twitter/list.haml", :tag => "render-view-head", :language => :haml)
+
+:textile
+  Notice how we refer to @tweets@ as a local, and not as instance variable anymore (line 2). Overally, it is cleaner to work with locals. Instance variables are dangerous.
+  
+  The new view must be rendered in the @display@ view.
+  
+= code("app/widgets/twitter/display.html.haml", :tag => "render-view-head", :language => :haml)
+
+:textile
+  The @render :view@ call looks and feels similar to partial rendering (line 2).
+  
+.info
+  :textile
+    Apotomo's #render is identical to the one found in controllers. It accepts two additional options, @:view@ and @:state@. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Widget:render.
+
+:textile
+  h2. Rendering states vs. helpers
+  
+  Partials are nice and a quick way to DRY up things. Rendering _states_ gives you even more power. It allows rendering and executing an associated piece of code. Sounds like a helper, doesn't it?
+  
+  Rendering states in views is really comparable to using plain helpers. But - ha! - states are object-oriented, can be inherited and overwriten. How does that look like?
+  
+= code("app/widgets/twitter/display.html.haml", :tag => "render-state-head", :language => :haml)
+
+:textile
+  I replace the @render :view@ with a @render :state@. The cool thing is, I can pass any options to the state method (line 2).
+
+= code("app/widgets/twitter_widget.rb", :tag => "render-state-head")
+
+:textile
+  One thing changed: We got a new state @#display@ (line 16-18)! It requires one argument @tweets@. So, when we render this state, we _have_ to pass in a tweets list. It's important to see how *states urge you to define _interfaces_* - and this is a good thing.
+  
+  h2. Summing up the rendering cycle
+  
+  So, what's going on here, step-by-step.
+  
+  * The @#display@ state called in @#render_widget@ collects all tweets and renders its view.
+  * In the @display@ view, we call @render :state@ and thus invoke a second rendering cycle.
+  * The called @#list@ state receives the tweets and renders its own view, @list.haml@ (line 17).
+  * The @list.haml@ view uses locals only.
+  
+= code("app/widgets/twitter/list.haml", :tag => "render-state-head", :language => :haml)
+
+:textile
+  h2. Extracting the form to a separate state
+  
+  Why not extract the form to another state and see how it looks? We will soon learn that this absolutely makes sense.
+  
+= code("app/widgets/twitter_widget.rb", :tag => "separate-form-head", :lines => 15..21)
+  
+:textile
+  First, I define a new state method that just renders (line 19-21). We then need an appropriate view.
+
+= code("app/widgets/twitter/form.haml", :tag => "separate-form-head", :language => :haml)
+
+:textile
+  Nothing new, just the form in a separate partial file.
+  
+  The last step is to render the @form@ state in our main view.
+  
+= code("app/widgets/twitter/display.html.haml", :tag => "separate-form-head", :language => :haml)
+
+:textile
+  Much simpler now, what was the actual form is now a _delegation_ to the @#form@ state (line 4).
+  
+  h2. DRYing up the widget class
+  
+  After all this work, we can also clean-up our @TwitterWidget@ and remove redundant queries to the @Tweet@ model.
+  
+= code("app/widgets/twitter_widget.rb", :tag => "separate-form-head")
+
+:textile
+  Look what happens now in @#process_state@ - after a tweet submission is consumed we simply re-run the @#display@ state and let it manage the rendering of the widget (line 12).
+  
+  That looks quite ok now. A quick discussion when to use states and then we're done for today!
+  
+  
+  h2. Views vs. States
+  
+  Don't confuse the @:view@ and @:state@ option. The first simply renders the view whereas the latter invokes a state method, which itself renders. Both are helpful and it's a matter of design where to use which.
+  
+  Another interesting concept is *extracting logic and views to separate states*, as we did with the form and the tweet list. As a rule of thumb, it is nothing wrong to move things to discrete states. Nevertheless, you could also create a separate widget class. We will learn more about that soon.
+
+In the #{page_link "next lesson", "validating"} we discover AJAX validations.
