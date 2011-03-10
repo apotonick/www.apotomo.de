@@ -1,87 +1,68 @@
 :ruby
-  # :alias => :validating, :title => "AJAX model validation"
+  # :alias => "validation-1.1", :title => "AJAX model validation"
 
 %h1
   Model Validation via AJAX
-  = page_link "apotomo-1.0", 'validating_10', :class => :version
+= meta_box :topics => "helpers", :branch => "validation", :versions => ["1.1"]
 
 :textile
+  In the #{page_link "last chapter", "using-states-1.1"} we successfully separated the tweet form from the list. It's time to add *form validations*  - we should display an error message if the tweet text is empty.
+  
+  h2. GUI and models
+  
   #{img "model-validation.png", :class => :right}
   
   Almost *every form has a backing model* it is connected to. Whereas the form is the model's GUI counterpart collecting input, the models job is to validate and save this data.
   
   When it comes to *wiring presentation to models*, small fine-grained widgets strike again.
-
-
-  Let's validate the new tweet in our @TwitterWidget@ and display some standard error message in case of insufficient input.
   
   
   h2. Validation in models
 
   First, we setup some constraints.
   
-= code "app/models/tweet.rb", :tag => "model-validation-1", :lines => 1..2
+= code "app/models/tweet.rb", :tag => "validation-head", :lines => 1..2
 
 :textile
-  h2. Form tweaking
+  h2. Using form helpers
   
-  In the next step we use the rails form helpers for setting up a the input field quickly.
+  In the next step we use Rails' form helpers for setting up the input field quickly.
   
-= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 26..33
+= code "app/widgets/twitter/form.haml", :tag => "validation-head"
 
 :textile
-  The processing state *triggered by the form submission* simply uses Rails' popular model methods to validate and save the fresh tweet item (line 27-28).
+  The @#form_for@ does all the work for us (line 4). When clicking the "Tweet!" button, the form is submitted and triggers a @:submit@ event in Rails.
   
-  Updating the widget works by sending back a re-rendered @show@ view. Since we changed the widget code, we also have to change things in the form view (line 32).
+  Errors from validation are showed with @error_messages@ (line 6).
   
-= code "app/cells/twitter_widget/show.html.haml", :tag => "model-validation-1", :lines => 4..11
+.info
+  :textile
+    Notice how you can use Rails *helpers* in widget views. If you need a special helper that's not around automatically, use @Apotomo::Widget.helper@ method, which Cells gives us.
+
 
 :textile
-  The @form_for@ does all the work for us (line 7). When clicking the "Tweet!" button, the form is sent to the unobstrusive url and triggering a @:submit@ events.
+  h2. Processing the input
   
-  h2. How to process the submission, again?
+  The @:submit@ event is catched by the twitter widget. Remember how we set up the observer?
   
-  Remember, the widget handling the form is listening to that event.
-  
-= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 1..2
+= code "app/widgets/twitter_widget.rb", :tag => "validation-head", :lines => 1..2
 
 :textile
-  Submitting an empty tweet yields an error message in our form. Awesome.
+  Right, we had that @responds_to_event@ statement. It simply invokes @#process_tweet@.
   
-  It didn't take more than a few lines widget code to wire the form to a model!
-  
-  h2. Bugs!
-  
-  Several things are not working correctly right now (by design!).
-  
-  * After submission, the new tweet doesn't show up
-  * When deleting items, the list breaks
-  
-  Why not use this bugs to learn a bit more about Apotomo?
-  
-  
-  h2. Where is the new tweet?
-  
-  Currently, we set up the tweets list in a @has_widgets@ block.
+  To validate the input we have to change this processing state a bit.
 
-= code "app/cells/twitter_widget.rb", :tag => "nesting-has-widgets-2", :lines => 8..12
+= code "app/widgets/twitter_widget.rb", :tag => "validation-head", :lines => 9..14
 
 :textile
-  The problem here is, that @has_widget@ is executed *once at initialization* in every request. In our case, however, we have a dynamic list where we need to add and remove childs in state methods. We should refactor our widget a bit.
+  Using @#update_attributes@ we let the model handle the validation and saving (line 10-11).
   
-= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 8..20
-
-:textile
-  In @synchronize_with_model!@ we first remove all children (line 13), then add items only if they are new (line 16-18).
+  After validating we re-render the main @display@ view and send it back. This will redraw the (hopefully) updated tweets list and eventually show an error message.  
   
-  Notice the brief @has_widgets@ block (line 9) - it is evaluated *in widget instance context*, so you may call instance methods directly.
+  h2. Separation of Concerns?
   
+  When playing around with the current state of our widget you may notice that the entire tweets list is _reloaded_ even when we want to display a validation error, only. Since we're rendering @display@ at the end of @#process_tweet@ we instruct a total re-rendering.
   
-  h2. Removing still sucks
+  This is not what we want.
   
-  When dumping an item on the trashbin, it doesn't vanish from the list. Yeah, we have to remove the *widget representation*, too.
-  
-= code "app/cells/twitter_widget.rb", :tag => "model-validation-1", :lines => 35..38
-
-:textile
-  A call to our synchronization method fixes things (line 36).
+  Why not tear apart the complex twitter widget into a container and a form? We will #{page_link "learn just that", "namespacing-1.1"} in the next chapters.

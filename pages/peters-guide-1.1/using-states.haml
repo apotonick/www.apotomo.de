@@ -62,7 +62,7 @@
 = code("app/widgets/twitter_widget.rb", :tag => "render-state-head")
 
 :textile
-  One thing changed: We got a new state @#display@ (line 16-18)! It requires one argument @tweets@. So, when we render this state, we _have_ to pass in a tweets list. It's important to see how *states urge you to define _interfaces_* - and this is a good thing.
+  One thing changed: We got a new state @#list@ (line 16-18)! It requires one argument @tweets@. So, when we render this state, we _have_ to pass in a tweets list. It's important to see how *states urge you to define _interfaces_* - and this is a good thing.
   
   h2. Summing up the rendering cycle
   
@@ -115,4 +115,4 @@
   
   Another interesting concept is *extracting logic and views to separate states*, as we did with the form and the tweet list. As a rule of thumb, it is nothing wrong to move things to discrete states. Nevertheless, you could also create a separate widget class. We will learn more about that soon.
 
-In the #{page_link "next lesson", "validating"} we discover AJAX validations.
+In the #{page_link "next lesson", "validation-1.1"} we discover AJAX validations.

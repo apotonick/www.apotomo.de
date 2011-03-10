@@ -1,55 +1,92 @@
 :ruby
-  # :alias => :namespacing
+  # :alias => "namespacing-1.1"
 
 %h1 
   Namespacing widgets
-  = page_link "apotomo-1.0", 'namespacing_10', :class => :version
+= meta_box :topics => "refactoring, namespaced widgets, generator", :branch => "twitter-namespaced", :versions => ["1.1"]
 
-This guide is for you, Kevin!
+:textile
+  This guide is for you, Kevin!
+  
+  #{page_link "We decided", "validation-1.1"} to extract the form behaviour from our twitter widget into a separate component. We will get two widgets then, one listing items while hosting the form, and the form itself.
+  
+  It's good choice to put these connected components into a namespace.
+  
+  h2. Generating namespaced widgets
+  
+  Let the generator create a namespaced form widget.
+  
+:coderay
+  #!bash
+  rails g apotomo:widget Twitter::Form display -e haml
+      create  app/widgets/twitter/form_widget.rb
 
 
 :textile
-  #{img "namespacing.png", :class => :right}
+  Cool, the generator pushes the widget into a sub-directory. That's cause we provided the _namespaced_ widget name @Twitter::Form@.
   
-  Brave component-thinking widget developers soon get to the point where they have *too many widget files in the @cells/@ directory.*
+  Looking at the new widget class we figure it's inside a module.
   
-  Time to tidy up.
+= code("app/widgets/twitter/form_widget.rb", :tag => "twitter-namespaced-head")
   
-  Similar to controllers, widgets can be namespaced by pushing the classes into modules and files into corresponding directories.
+:textile
+  h2. Namespacing?
   
-  h2. Moving files
+  So, namespacing is basically pushing widget _classes_ into the *namespace* module and packing the assets into a subdirectory.
   
-  Let's move all the twittering widgets in the @Twitter@ namespace.
+  After moving the @TwitterWidget@ to @Twitter::PanelWidget@ manually things look like this:
   
-  First, I create a new *namespace directory* @cells/twitter@ and move everything else into it. Note how I renamed @twitter_widget@ to @panel@ - just to demonstrate that widget names are not restricted.
+  table.
+  |*Original file*|*After namespacing*|
+  |app/widgets/*twitter_widget.rb*|app/widgets/twitter/*panel_widget.rb*|
+  |app/widgets/twitter/display.html.haml|app/widgets/twitter/*panel*/display.html.haml|
+  |app/widgets/twitter/form.haml|app/widgets/twitter/*form*/display.html.haml|
+  |-|app/widgets/twitter/*form_widget.rb*|
+
+
+  h2. Refactoring
   
-  h2. Adding modules
+  We need to move some code portions from the original @TwitterWidget@ to the new @Twitter::FormWidget@.
   
-  Since the three widgets now reside in @twitter/@ Rails expects them to be wrapped in a @Twitter@ module.
+  After a bit of refactoring, the form widget looks like this.
   
-= code("app/cells/twitter/panel.rb", :tag => "v17", :lines => 1..3)
+= code("app/widgets/twitter/form_widget.rb", :tag => "twitter-namespaced-refactored-head")
 
 :textile
-  This is really nothing more than adding a module wrapper. Easy, isn't it?
+  That's old code we already know, in a new shell. Three things changed here, so far.
   
-= code("app/cells/twitter/trashbin_widget.rb", :tag => "v17", :lines => 1..3)
+  * When rendering the @#display@ _state_ we expect blank form, so we create a new @Tweet@ instance (line 5). 
+  * The @#process_tweet@ method is called @#submit@ now (line 9). This way we can use the shorthand form of @responds_to_event@ (line 2).
+  * When processing the form submission we introduce a *decider*. If the input is valid invoke the @#display@ _state_ and thus render a new, blank form (line 13). Otherwise, simply render the @display@ _view_ and reuse our <code>@tweet</code> instance variable with its error messages (line 15).
+  
+  The form view changed a bit, too.
+  
+= code("app/widgets/twitter/form/display.html.haml", :tag => "twitter-namespaced-refactored-head", :language => :haml)
 
 :textile
-  Just put an embracing module around all your twitter-related widgets.
-
+  We simply wrap the form in a @#widget_div@ so we can use @#replace@ (line 1).
   
-  h2. Update the widget trees
+  Another step for now is updating the panel @display@ view - we don't want to render the @#form@ state anymore, since this is a discrete stand-alone widget now.
   
-  Of course, we shouldn't forget to update the controller's @has_widgets@ blocks as they refer to the widget class name.
-  
-= code("app/controllers/dashboard_controller.rb", :tag => "v17", :lines => 1..7)
+= code("app/widgets/twitter/panel/display.html.haml", :tag => "twitter-namespaced-refactored-head")
 
 :textile
-  Namespaces are strings where a slash separates modules and classes - as in @"twitter/panel"@.
+  h2. Using namespaced widgets
   
-  Don't forget to fix your widget tests, too.
-
-= code("test/widgets/trashbin_widget_test.rb", :tag => "v17", :lines => 1..7)
+  The widget tree in the @DashboardController@ needs a bit of updating to show our namespaced widgets.
+  
+= code("app/controllers/dashboard_controller.rb", :tag => "twitter-namespaced-refactored-head")
 
 :textile
-  You _are_ testing, aren't you?
+  Here, we add two widgets to @root@. Notice how I refer to the _namespaced_ class names by separating the module and class with a @/@ as in @twitter/panel@.
+  
+  The panel widget gets an explicit id @:twitter@ (line 4). The second widget will be named @:twitter_form@ explicitely (line 5).
+  
+  Understanding the id naming is especially important when it comes to rendering.
+  
+= code("app/views/dashboard/index.html.haml", :tag => "twitter-namespaced-refactored-head")
+
+:textile
+  That works, both widgets are rendered. However, the tweets list is not updated after a successful submission.
+  
+  Well, of course it doesn't update!? How would the panel know about updates from the separated form widget? We will use *nesting and bubbling events* in #{page_link "the next chapters", "simple-nesting-1.1"} to accomplish that! Yay!

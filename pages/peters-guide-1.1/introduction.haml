@@ -9,11 +9,23 @@
 = meta_box :topics => "basic widget, generator, #render_widget", :branch => "introduction", :versions => ["0.1", "1.0", "1.1"]
 
 :textile
+  Apotomo is a *generic widget framework for Rails*. While _you_ write the actual widgets - like a twitter box, tab panels or a full-blown shopping cart - Apotomo provides you with all you need for a component-oriented GUI application.
+  
+  Here's a quick overview:
+  
+  * *@Apotomo::Widget@* - your starting point. It looks and feels like a mini-controller with views, states, event handling, and more. Did you know that @Apotomo::Widget < Cell:Base@? [_Check the #{link "cells project", "http://cells.rubyforge.org/"} if you're lost now._]
+  * A *generator* to stub out all the necessary assets for you.
+  * Widgets can respond to *events* within Ruby.
+  * You can setup widget trees and use them throughout your @ActionController@.
+  
+  
+  h2. What are we gonna do?
+  
   This is a brief tutorial for setting up a small *Rails 3* app with Apotomo widgets. It's meant as a starting point for learning Apotomo, so grab a beer and read on!
 
   The code is available in a ["git repo":http://github.com/apotonick/apotomo_peters_guide], feel free to clone.
 
-  During the course we are developing a rich application for twittering. The first widget looks like this. Pretty straight-forward.
+  During the course we are developing a *rich dashboard application* for twittering. The first widget looks like this. Pretty straight-forward.
 
 = img "tweeter.png"
 
@@ -34,9 +46,9 @@
       ...
 
 :textile
-  Now, rewrite your @Gemfile@:
+  Now, tweak your @Gemfile@, we need the "Apotomo gem":http://rubygems.org/gems/apotomo:
 
-= code "Gemfile", :tag => "introduction-5"
+= code "Gemfile", :tag => "introduction-head"
 
 :textile
   Install the gems with bundler.
@@ -48,14 +60,17 @@
 %h2 Layout
 
 :textile
-  Next, we could need a layout.
+  Next, we need a layout.
   
-= code("app/views/layouts/application.html.haml", :tag => "introduction-1", :language => :haml)
+= code("app/views/layouts/application.html.haml", :tag => "introduction-head", :language => :haml)
+
+:textile
+  Notice that we already pull "JQuery and Rails UJS":https://github.com/rails/jquery-ujs support into the page (line 3).
 
 %h2 The Tweet model
 
 :textile
-  Say we're writing a small widget that let's you post and displays your recent posts. We could need a Tweet model for that.
+  Say we're writing a small widget that let's you post and displays your recent posts. We need a @Tweet@ model for that.
   
 :coderay
   #!bash
@@ -66,7 +81,7 @@
 %h2 Controller
 
 :textile
-  Widgets are usually embedded into controllers, so there should be one.
+  Widgets are usually embedded into controllers, so let's generate a dashboard controller.
   
 :coderay
   #!bash
@@ -92,33 +107,126 @@
 
       
 :textile
-  The widget class should look as follows.
+  The widget class should look as follows. Notice that widgets reside in @app/widgets/@.
 
-= code("app/widgets/twitter_widget.rb", :tag => "introduction-3")
-
-:textile
-  The corresponding view for @display@ is rendered in line 6. It contains the same tiresome markup as any other view in Rails.
-
-= code("app/widgets/twitter/display.html.haml", :tag => "introduction-3", :language => :haml)
-
-
-%h2 Putting the tweeter in the dashboard
+= code("app/widgets/twitter_widget.rb", :tag => "introduction-head")
 
 :textile
-  To plug your new widget in a controller you can use a handy @has_widgets@ block.
-
-= code("app/controllers/dashboard_controller.rb", :tag => "introduction-3")
-
-:textile
-  Change the index view.
+  *Feeling knocked down?* No problem, let's go through this step-by-step.
   
-= code("app/views/dashboard/index.html.haml", :tag => "introduction-3")
+  h2. How do I render widgets in the dashboard controller?
+  
+  Ok, I will start the other way round, with the dashboard controller which _uses_ the twitter widget.
 
-
-%h2 Running it
+= code("app/controllers/dashboard_controller.rb", :tag => "introduction-head")
 
 :textile
-  Next, start the engine
+  Apotomo requires you to "declare" which widgets you're gonna use in an action. And this is done in the @has_widgets@ block (line 3-5). We simply append our brand-new twitter widget to the @root@ widget.
+  
+
+.info
+  :textile
+    The @root@ widget caused some headache for new users. Apotomo simply provides a *default root widget* for your widget tree. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Rails/ControllerMethods/ClassMethods:has_widgets.
+  
+  
+:textile
+  h2. Render it!
+  
+  Nothing will happen until we actually _render_ the widget in the action view.
+  
+= code("app/views/dashboard/index.html.haml", :tag => "introduction-head")
+
+:textile
+  This will invoke our twitter widget's @#display@ method and simply return the markup (or whatever else you do).
+  
+.info
+  :textile
+    @#render_widget@ invokes the default state @#display@ on the widget if no other options are given. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Widget:render_widget.
+  
+
+:textile
+  h2. The widget got a view
+  
+  Let's peek at the widget's source, again.
+  
+= code("app/widgets/twitter_widget.rb", :tag => "introduction-head", :lines=>1..7)
+
+:textile
+  First, we grab all available tweets (line 5). Next, we call @#render@ which will render @#display@'s view. This is roughly similar to ordinary controllers.
+
+= code("app/widgets/twitter/display.html.haml", :tag => "introduction-head", :language => :haml)
+
+:textile
+  The entire view is wrapped by @#widget_div@ (line 1) - which is just a helper doing something like
+
+:coderay
+  #!html
+  <div id="twitter">
+    ...
+  </div>
+
+.info
+  :textile
+    @#widget_div@ per default uses the widget's id for the div. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Rails/ViewHelper:widget_div.
+  
+:textile
+  h2. Oh no, JavaScript!
+  
+  Most of the view is boring stuff. We list all twitter items (line 3-5) and then create an AJAX form. Notice how we _delegate_ computation of the form's action url to Apotomo by calling @#url_for_event@ (line 10).
+  
+.info
+  :textile
+    @#url_for_event@ returns an apotomo-generated url for triggering an event in your widget tree. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Widget:url_for_event.
+
+:textile
+  h2. Triggering an event
+  
+  Now that you click "Submit", what happens?
+  
+  * The js logic wired in @rails.js@ detects a form submission. Since the form is tagged with @:remote => :true@ this usually means it wants to be submitted via AJAX.  
+  * An AJAX request is sent, to something like @http://localhost:3000/dashboard/render_event_response?source=twitter&type=submit&text=Hey@.
+  * Apotomo processes this request and triggers the @:submit@ event in the twitter widget.
+  * Now... how does the widget react?
+  
+  
+  h2. Responding to events
+  
+  Remember, our widget started like this:
+  
+= code("app/widgets/twitter_widget.rb", :tag => "introduction-head", :lines=>1..2)
+
+:textile
+  That's where we set our observer, saying <em>"If I see a :submit event, I run my #process_tweet state!"</em>.
+  
+.info
+  :textile
+    The term *_state_* refers to a rendering method in a widget and is similar to an _action_ in plain old controllers.
+
+:textile
+  h2. Updating the widget in the browser
+  
+  What does the @#process_tweet@ method do in order to _respond_ to the event?
+  
+= code("app/widgets/twitter_widget.rb", :tag => "introduction-head", :lines=>9..14)
+
+:textile
+  Please note how the method receives the _event object_ as argument (line 9) - how cool's that?
+  
+  The event may be queried for parameters sent with the event - this is how we retrieve the entered text from the form (line 10).
+  
+  We then reload the tweets list (line 12) and call @#replace@ to, well, replace the widget on the page (line 13). In other words, we re-render the @display@ view and replace it in the browser.
+
+.info
+  :textile
+    @#replace@ and @#update@ are little helper methods and wrap the content into JavaScript. They accept the same options as @#render@ plus an optional selector. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/JavascriptMethods:replace.
+    
+    *You don't have to use these helpers* - they're here for your convenience. However, you may return any content, JS or whatever using @render :text => "..."@.
+
+
+:textile  
+  h2. Finally, let's run it!
+
+  Now that we figured all the important parts, start the engine! I can hear the theme of _Rocky I_ in the background...
 
 :coderay
   #!bash
@@ -129,4 +237,4 @@
   
   Happy "tweeting".
   
-  Now, let's learn how #{page_link "how widgets can interact", :dragndrop} with each other.
+  Now, let's learn how #{page_link "to improve our view architecture", "using-states-1.1"} by using partials and states.

@@ -5,7 +5,7 @@
   $(document).ready(function() {
 
   $("#header img").qtip({
-    content: 'Help us promoting!\nVote for an <a href="http://feedback.railscasts.com/forums/77-episode-suggestions/suggestions/624545-apotomo">Apotomo Railscast!</a>',
+    content: 'Help us promoting!\nVote for an <a href="http://feedback.railscasts.com/forums/77-episode-suggestions/suggestions/624545-apotomo">Apotomo Railscast!</a> <a href="#" id="close_callout">Close</a>',
     position: {
       corner: {
         tooltip:  "topLeft",
@@ -25,7 +25,12 @@
       tip:        true,
       name:       'dark'
     }
-  });          
+  });   
+  
+  $("#close_callout").click( function() {
+    $("#header img").qtip("hide");
+  });
+         
   });
 
 :textile
@@ -47,7 +52,7 @@
 .feature
   %h3 Getting started
   %ul
-    %li Check #{page_link "our tutorial", :introduction} stepping through Apotomo's features.
+    %li Check #{page_link "our tutorial", "introduction-1.1"} stepping through Apotomo's features.
     %li #{page_link "Get help", :help} within minutes.
   
 .feature

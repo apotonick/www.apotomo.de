@@ -1,6 +1,6 @@
 module BoxHelper
   def meta_box(options)
-    options[:branch_link] = link options[:branch], "https://github.com/apotonick/apotomo_peters_guide/#{options[:branch]}"
+    options[:branch_link] = link options[:branch], "https://github.com/apotonick/apotomo_peters_guide/tree/#{options[:branch]}"
     
     options[:version_links] = []
     for version in options[:versions].sort do

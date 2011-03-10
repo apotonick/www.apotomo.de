@@ -13,6 +13,20 @@ atom:
   
   entries:
     -
+      id: using-states.html
+      title: New chapter about states and views
+      updated: 2011-03-06T13:30:02+02:00
+      link: http://apotomo.de/peters-guide-1.1/using-states.html
+      summary: A new guide explains how and where to use partials and states as helpers.
+    
+    -
+      id: peters-guide-updated
+      title: Rewrote the introduction!
+      updated: 2011-03-03T13:30:02+02:00
+      link: http://apotomo.de/peters-guide-1.1/introduction.html
+      summary: The introduction now is a detailed walk-through showing every aspect of getting a basic widget up.
+    
+    -
       id: 1.1-online
       title: Updated the guides to 1.1
       updated: 2011-03-02T13:30:02+02:00
