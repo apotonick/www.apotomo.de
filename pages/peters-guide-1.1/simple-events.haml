@@ -1,0 +1,102 @@
+:ruby
+  # :alias => "simple-events-1.1"
+
+%h1 
+  Bubbling Events, pt. 1
+= meta_box :topics => "events, trigger, responds_to_event, selectors", :branch => "simple-events", :versions => ["1.1"]
+
+:textile
+  The simple event system in Apotomo is one of its strengths when being compared to traditional controllers.
+  
+  It helps you building *decoupled systems* without having to write manual dispatching code.
+  
+  
+  h2. Triggering events
+  
+  When starting with Apotomo the first events are usually fired through _triggering requests_ from the browser.
+  
+.info
+  :textile
+    The term *triggering request* refers to a request to a @#url_for_event@-computed address. Apotomo processes this request and _triggers_ the event in the appropriate source widget.
+
+:textile
+  In order to notify the outer world about a new tweet, we need to modify the @FormWidget@.
+  
+= code("app/widgets/twitter/form_widget.rb", :tag => "simple-events-head")
+  
+:textile
+  There's a @#trigger@ statement, wow (line 13)! This is all we need to fire a bubbling @:newTweet@ event.
+  
+.info
+  :textile
+    You can name the event fired with @#trigger@ whatever you feel like. When needed, you can also append payload data to it.  Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/EventMethods:trigger.
+
+
+:textile
+  h2. How do events bubble?
+  
+  Remember, we have something to say to the outer world: _"Hey, there's a brand-new tweet from the form widget!"_
+  
+  How can the panel catch that event and in response update the tweets list it manages? Well, let's check the way the _bubbling_ event is traveling.
+  
+:coderay
+  #!bash
+  root
+  |-- panel
+  |   |-- form (triggers :newTweet)
+
+:textile
+  Since the triggering form widget is a child of panel, the event will pass the panel on its way to root.
+  
+  That means, we can simply use @#responds_to_event@ in the @PanelWidget@.
+
+= code("app/widgets/twitter/panel_widget.rb", :tag => "simple-events-head")
+
+:textile
+  Two things got added here.
+  
+  First, we watch out for the @:newTweet@ event and let it invoke the panel's @#redraw_list@ state (line 2).
+  
+  Second, I added a @#redraw_list@ method (line 18-20). This one is pretty interesting. The @#replace@ methods passes the updated tweets list to the @#list@ state and the replaces the list in the page using a custom selector.
+  
+  
+  h2. Using selectors
+  
+  The rendered panel roughly looks like this:
+  
+  <pre>
+    <div id="twitter">
+      <ul>
+        <li data-id='10'>
+          Listening to ALL.
+        </li>
+  </pre>
+  
+  Everything inside the @<ul>@ is from the @#list@ state, so why not simply render that state and then replace it?
+  
+= code("app/widgets/twitter/panel_widget.rb", :tag => "simple-events-head", :lines => 19..19)
+
+:textile
+  h2. An alternative way to replace content
+  
+  If that does look weird to you, you can go another way. The @replace@ statement could also be written like this:
+  
+:coderay
+  #!ruby
+  html = render({:state => :list}, Tweet.find(:all))
+  replace "#\#{widget_id} ul", :text => html
+
+
+:textile
+  h2. Summary 
+  
+  Clicking "Tweet!" after typing in some text really updates the form _and_ the panel list. Awesome! Our bubbling event worked.
+  
+  * The @:submit@ event is processed in the form widget.
+  * It adds a new tweet to the database, triggers an event and then re-renders itself.
+  * The panel widget gets alerted by the triggered event and re-renders its list.
+  * Both page updates are returned to the browser.
+  
+  Bubbling events is a powerful tool when it comes to inter-widget communication. What a ridiculous word.
+  
+  Anyway, the list redrawing consumes a lot of cycles as it reloads the entire tweets collection. Let's learn how we can use the #{page_link "event as a message object", "message-passing-1.1"} in the next excursus.

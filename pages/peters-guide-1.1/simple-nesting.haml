@@ -1,0 +1,68 @@
+:ruby
+  # :alias => "simple-nesting-1.1"
+
+%h1 
+  Nesting widgets, pt. 1
+= meta_box :topics => "nesting, render_widget, has_widgets", :branch => "simple-nesting", :versions => ["1.1"]
+
+:textile
+  Since we moved our twitter #{page_link "widget to a namespace", "namespacing-1.1"} let's learn how nesting widgets works. The panel widget should host the form to hide implementation details to the outside.
+  
+  h2. Public nesting
+  
+  What sounds like a statement of facts is a simple way to setup a widget tree. Public nesting usually happens in the controller's @has_widgets@ block.
+  
+= code("app/controllers/dashboard_controller.rb", :tag => "simple-nesting-head", :lines => 1..6)
+  
+:textile
+  Instead of adding the form to @root@, we add it to the panel widget (line 5).
+  
+  The panel widget just got daddy! We can safely render the child _inside_ the panel's @display@ view.
+
+= code("app/widgets/twitter/panel/display.html.haml", :tag => "simple-nesting-head", :language => :haml)
+
+.info
+  :textile
+    You can use @#render_widget@ in widget views and in controller views. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Widget:render_widget.
+    
+:textile
+  Now that we render the child in the widget, we should remove the rendering from the controller view. Otherwise, the form would be rendered twice, which is not what we want.
+  
+= code("app/views/dashboard/index.html.haml", :tag => "simple-nesting-head")
+
+:textile
+  By moving the @#render_widget@ call from the controller's view into the panel's view we remove responsibility from the controller - it shouldn't care about the internals of the panel widget.
+  
+  h2. Private nesting
+  
+  If the controller shouldn't worry about the widget's internals, why does it still have to setup a widget tree? That's a legitimate complaint.
+  
+  We can move the tree setup into the panel widget - that's why widgets can have their own @has_widgets@ blocks.
+
+= code("app/widgets/twitter/panel_widget.rb", :tag => "simple-nesting-private-head")
+
+.info
+  :textile
+    The @has_widget@ block in widget classes is executed in _instance_ context, so you may access @self@ and instance variables. In controllers, you may use the controller instance. Check the "API to learn more":http://rdoc.info/gems/apotomo/1.1.0/Apotomo/Rails/ControllerMethods/ClassMethods:has_widgets.
+    
+:textile
+  This almost looks identical to the controller - however, there is no knowledge about the widget's internal setup in the controller anymore. All it knows is _"There's a twitter panel widget"_ - the rest is hidden in the widget itself.
+
+  The controller now has a despeckled @has_widgets@ block, again.
+  
+= code("app/controllers/dashboard_controller.rb", :tag => "simple-nesting-private-head", :lines => 1..5)
+
+:textile
+  h2. Summary
+  
+  A short process overview might help understanding what's going on.
+  
+  * The controller adds the panel to @root@.
+  * In its @index.html.haml@ view, it renders the panel, only.
+  * The panel internally has a child widget, the form.
+  * In the panel's @display.haml@ view the child gets rendered at the appropriate place using @#render_widget@.
+  * The child widget renders the form in its own @#display@ state.
+  
+  That's nesting!
+   
+  This is pretty cool. The form shows up in the panel. If only the list would update after we submit the form. Let's explore how #{page_link "bubbling events can help", "simple-events-1.1"} here.

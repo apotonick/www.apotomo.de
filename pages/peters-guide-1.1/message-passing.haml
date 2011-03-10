@@ -1,0 +1,57 @@
+:ruby
+  # :alias => "message-passing-1.1"
+
+%h1 
+  Passing Messages with Events
+= meta_box :topics => "events, trigger, messages", :branch => "message-passing", :versions => ["1.1"]
+
+:textile
+  In this guide we're gonna explore an interesting feature related with events, which is called *message passing*.
+  
+  The example in this guide may look weird, and it actually is - let's use it for discussion and learning a couple of things about Apotomo.
+  
+  
+  h2. Events can transport payload
+  
+  In the #{page_link "last chapter", "simple-events-1.1"} the @:newTweet@ event urged our panel widget to redraw the entire tweets list. As it consumes a lot of time to reload the tweets from the database instead we could also just redraw the _new_ tweet.
+  
+  How would the panel know which tweet is the one just created? The form widget could propagate that using the event.
+  
+= code("app/widgets/twitter/form_widget.rb", :tag => "message-passing-head")
+  
+  
+:textile
+  We simply append the new tweet to the triggered event (line 13). States triggered _by this event_ can now access this payload data - cool!
+  
+  
+  h2. The event object speaks! 
+  
+  Let's see how we can query the event object for the new tweet.
+
+= code("app/widgets/twitter/panel_widget.rb", :tag => "message-passing-head")
+
+:textile
+  I tweaked the @#redraw_list@ method. What re-rendered the @display@ state now sends back one new @<li>...</li>@ item, only (line 18-22).
+  
+  By using @evt[:tweet]@ I can access the tweet model sitting piggy-back on the event triggered in the form (line 19).
+  
+  
+  h2. Sending back plain JavaScript
+  
+  Note how I don't use @#replace@ anymore but send back hand-made JavaScript (line 21).
+  
+  The content sent to the browser roughly looks like this.
+  
+:coderay
+  #!javascript
+  $("#twitter ul").append("<li>boardumb</li>");
+
+:textile
+  This simply appends the new tweet to the list. Nothing more.
+  
+  
+  h2. Discussion
+  
+  The alert reader with the desire for strong encapsulation will notice a small interface violation here: The panel widget _knows_ about the HTML format of a list item. This should be handled by the @list@ state, or by a separate tweet widget.
+  
+  We're gonna cover that #{page_link "in the next chapter", "advanced-nesting-1.1"}. 
