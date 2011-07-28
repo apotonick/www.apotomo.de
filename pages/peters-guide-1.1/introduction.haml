@@ -66,10 +66,16 @@
 
 :textile
   Notice that we already pull "JQuery and Rails UJS":https://github.com/rails/jquery-ujs support into the page (line 3).
+  
+  Installing @jquery-ujs@ needs another step.
 
-%h2 The Tweet model
+:coderay
+  #!bash
+  $ rails generate jquery:install
 
 :textile
+  h2. The Tweet model
+
   Say we're writing a small widget that let's you post and displays your recent posts. We need a @Tweet@ model for that.
   
 :coderay
