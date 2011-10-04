@@ -13,6 +13,13 @@ atom:
   
   entries:
     -
+      id: comments-available
+      title: Comments now available!
+      updated: 2011-07-28T13:30:02+02:00
+      link: http://apotomo.de/
+      summary: Thanks to Disqus we now have comments enabled for each page, so go ahead and discuss things directly on the page.
+      
+    -
       id: using-states.html
       title: New chapter about states and views
       updated: 2011-03-06T13:30:02+02:00

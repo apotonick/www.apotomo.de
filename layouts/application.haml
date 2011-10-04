@@ -7,11 +7,15 @@
   
     #container
       #header
+        <a id="donate" href='http://www.pledgie.com/campaigns/16068'><img alt='Click here to lend your support to: Cells and Apotomo  and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/16068.png?skin_name=chrome' border='0' /></a>
+        
         %a(href="/")
-          = img 'reflexion-smooth-transparent-200.png'
-          =#img 'reflexion.png', :width => 216
+          = img 'reflexion-smooth-transparent-200.png', :id => :logo
         #slogan
           Web Components for Rails.
+        
+        
+        
         %hr
       #sidebar
         .links
@@ -23,7 +27,7 @@
             * #{page_link "Help",    "help"}
             * #{link_to "API",    "http://rdoc.info/github/apotonick/apotomo/master/frames"}
             * #{link_to "Blog",    "http://nicksda.apotomo.de"}
-        
+            
         .rights
           Web 2.0
           
@@ -35,6 +39,7 @@
           <b>Learn</b>
           
           :textile
+            * #{img "ffw.png"} #{page_link "Screencasts", "screencasts"}
             * #{page_link "Introduction", "introduction-1.1"}
             * #{page_link "States and Views", "using-states-1.1"}
             * #{page_link "AJAX Validation", "validation-1.1"}
@@ -68,11 +73,29 @@
       #content
         = yield
         
+        %hr
+        
+        #disqus_thread
+          :javascript
+            // var disqus_developer = 1;
+            var disqus_shortname = 'apotomo';
+            var disqus_identifier = '#{current_page}';
+
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+          <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+        
       #footer
         %hr
+        = link_to img("twitter5gif.gif"), "http://twitter.com/apotonick"
+        
         :textile
-          Apotomo is a ["Nick Sutterer":http://nicksda.apotomo.de] product. 
-    
+          Apotomo is a ["Nick Sutterer":http://nicksda.apotomo.de] product.
+        
+        
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-1303966-4']);
